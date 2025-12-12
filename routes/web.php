@@ -6,6 +6,7 @@ use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\MenuController;
 use App\Http\Controllers\Admin\DishController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\AdminRegisterController;
 
 //--Client--
 // Корзина
@@ -22,8 +23,8 @@ Route::prefix('cart')->group(function () {
 
 
 // Оформление заказа
-Route::get('/checkout', [CheckoutController::class, 'showForm'])->name('checkout.form');
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 'showForm'])->name('checkout.form');
+Route::post('/checkout', [\App\Http\Controllers\Front\CheckoutController::class, 'store'])->name('checkout.store');
 
 // Мои заказы
 Route::get('/my-orders', [\App\Http\Controllers\Front\OrderHistoryController::class, 'index'])->name('my.orders');
@@ -31,6 +32,10 @@ Route::get('/my-orders/{order}', [\App\Http\Controllers\Front\OrderHistoryContro
 
 Route::get('/menu', [\App\Http\Controllers\Front\MenuController::class, 'dishes'])->name('menu');
 Route::post('/menu/add/{dish}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
+
+// register
+Route::get('/register', [\App\Http\Controllers\Admin\AdminRegisterController::class, 'showForm'])->name('admin.register');
+Route::post('/register', [\App\Http\Controllers\Admin\AdminRegisterController::class, 'register']);
 
 
 //--Admin--
