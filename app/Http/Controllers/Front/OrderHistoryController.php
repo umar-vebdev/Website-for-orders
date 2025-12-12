@@ -17,7 +17,7 @@ class OrderHistoryController extends Controller
                         ->orderBy('id', 'desc')
                         ->get();
 
-        return view('front.my_orders_list', compact('orders'));
+        return view('front.orders.my_orders', compact('orders'));
     }
 
     // Детали заказа
@@ -32,6 +32,6 @@ class OrderHistoryController extends Controller
 
         $order->load('items.dish');
 
-        return view('front.my_orders_show', compact('order'));
+        return view('front.orders.order_detail', compact('order'));
     }
 }

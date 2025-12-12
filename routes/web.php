@@ -7,8 +7,11 @@ use App\Http\Controllers\Front\MenuController;
 use App\Http\Controllers\Admin\DishController;
 use App\Http\Controllers\Admin\OrderController;
 
-// ========== CLIENT SIDE ==========
+//--Client--
 // Корзина
+Route::get('/', function(){
+    return view('welcome');
+});
 Route::prefix('cart')->group(function () {
     Route::get('/', [\App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
     Route::post('/add/{id}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
@@ -30,8 +33,9 @@ Route::get('/menu', [\App\Http\Controllers\Front\MenuController::class, 'dishes'
 Route::post('/menu/add/{dish}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
 
 
-// ========== ADMIN SIDE ==========
+//--Admin--
 Route::prefix('admin')->middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
+//Блюдо
     Route::get('/dishes', [\App\Http\Controllers\Admin\DishController::class, 'index'])->name('admin.dishes');
     Route::get('/dishes/create', [\App\Http\Controllers\Admin\DishController::class, 'create'])->name('admin.dishes.create');
     Route::post('/dishes', [\App\Http\Controllers\Admin\DishController::class, 'store'])->name('admin.dishes.store');
@@ -39,6 +43,7 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\AdminMiddleware::class]
     Route::put('/dishes/{id}', [\App\Http\Controllers\Admin\DishController::class, 'update'])->name('admin.dishes.update');
     Route::delete('/dishes/{id}/delete', [\App\Http\Controllers\Admin\DishController::class, 'destroy'])->name('admin.dishes.destroy');
 
+//Заказы
     Route::get('orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders');
     Route::get('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');

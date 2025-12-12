@@ -15,7 +15,7 @@ class CheckoutController extends Controller
     {
         $clientId = $request->cookie('client_id');
         $cart = Cache::get("cart_$clientId", []);
-        return view('front.checkout', compact('cart'));
+        return view('front.orders.order_form', compact('cart'));
     }
 
     public function store(Request $request)

@@ -15,7 +15,7 @@ class CartController extends Controller
     {
         $clientId = $request->cookie('client_id');
         $cart = Cache::get("cart_$clientId", []);
-        return view('front.cart', compact('cart'));
+        return view('front.cart.index', compact('cart'));
     }
 
     // Добавить блюдо в корзину

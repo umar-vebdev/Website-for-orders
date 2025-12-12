@@ -40,7 +40,7 @@ class DishController extends Controller
             'photo_path' => $path
         ]);
 
-        return redirect()->route('admin.dishes.index')->with('success', 'Блюдо добавлено!');
+        return redirect()->route('admin.dishes')->with('success', 'Блюдо добавлено!');
     }
 
     // Форма редактирования
@@ -68,13 +68,13 @@ class DishController extends Controller
             'photo_path' => $path
         ]);
 
-        return redirect()->route('admin.dishes.index')->with('success', 'Блюдо обновлено!');
+        return redirect()->route('admin.dishes')->with('success', 'Блюдо обновлено!');
     }
 
     // Удаление блюда
     public function destroy(Dish $dish)
     {
         $dish->delete();
-        return redirect()->route('admin.dishes.index')->with('success', 'Блюдо удалено!');
+        return redirect()->route('admin.dishes')->with('success', 'Блюдо удалено!');
     }
 }

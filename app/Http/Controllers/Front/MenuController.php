@@ -10,6 +10,6 @@ class MenuController extends Controller
 {
     public function dishes() {
         $dishes = Dish::all();
-        return view('front.menu', compact('dishes'));
+        return view('front.menu.index', compact('dishes'));
     }
 }
