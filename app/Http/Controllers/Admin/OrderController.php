@@ -16,13 +16,13 @@ class OrderController extends Controller
         ->orderBy('id', 'desc')
         ->get();
 
-        return view('admin.orders', compact('$orders'));
+        return view('admin.orders.index', compact('$orders'));
     }
 
     public function show(Order $order)
     {
         $order->load('items.dish');
-        return view('admin.order_detail', compact('$order'));
+        return view('admin.orders.detail', compact('$order'));
     }
 
     public function updateStatus(Request $request, Order $order, $id)

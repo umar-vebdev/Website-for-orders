@@ -7,6 +7,7 @@ use App\Http\Controllers\Front\MenuController;
 use App\Http\Controllers\Admin\DishController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AdminRegisterController;
+use App\Http\Controllers\Admin\AdminAuthController;
 
 //--Client--
 // Корзина
@@ -37,6 +38,12 @@ Route::post('/menu/add/{dish}', [\App\Http\Controllers\Front\CartController::cla
 Route::get('/register', [\App\Http\Controllers\Admin\AdminRegisterController::class, 'showForm'])->name('admin.register');
 Route::post('/register', [\App\Http\Controllers\Admin\AdminRegisterController::class, 'register']);
 
+//логин/логаут
+Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+
 
 //--Admin--
 Route::prefix('admin')->middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
@@ -52,4 +59,8 @@ Route::prefix('admin')->middleware([\App\Http\Middleware\AdminMiddleware::class]
     Route::get('orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders');
     Route::get('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+
+
+
+    Route::get('/dashboard', function() {return view('admin.dashboard');})->name('admin.dashboard');
 });

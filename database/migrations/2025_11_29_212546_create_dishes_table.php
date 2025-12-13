@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');          
             $table->decimal('price', 8, 2);  
             $table->integer('weight');
-            $table->string('photo_path');
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }

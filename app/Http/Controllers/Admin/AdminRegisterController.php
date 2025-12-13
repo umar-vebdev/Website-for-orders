@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 class AdminRegisterController extends Controller
 {
@@ -22,12 +24,15 @@ class AdminRegisterController extends Controller
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_admin' => 1,
         ]);
-        return redirect(); //Еще не готово
+
+        Auth::login($user);
+
+        return redirect('/admin/dashboard');
     }
 }
