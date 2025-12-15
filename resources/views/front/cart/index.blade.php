@@ -49,5 +49,12 @@
 
         <a href="{{ route('checkout.form') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Оформить заказ</a>
     @endif
+    <form action="{{ route('cart.clear') }}" method="POST">
+        @csrf
+        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">
+            Очистить корзину
+        </button>
+    </form>
+    
 </div>
 @endsection

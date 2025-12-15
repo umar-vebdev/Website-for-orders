@@ -49,7 +49,7 @@ class CartController extends Controller
         $cart = Cache::get("cart_$clientId", []);
 
         $dish = Dish::findOrFail($id);
-        
+
         if(isset($cart[$dish->id])) {
             $cart[$dish->id]['quantity'] = $request->quantity;
             Cache::put("cart_$clientId", $cart, 60*24);
@@ -73,4 +73,14 @@ class CartController extends Controller
 
         return redirect()->back();
     }
+
+    public function clear(Request $request)
+    {
+        $clientId = $request->cookie('client_id');
+        
+        \Illuminate\Support\Facades\Cache::put("cart_$clientId", [], 60*24);
+    
+        return redirect()->back()->with('success', 'Корзина очищена!');
+    }
+    
 }
