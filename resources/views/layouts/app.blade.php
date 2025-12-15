@@ -11,7 +11,7 @@
     <!-- Header -->
     <header class="bg-white shadow p-4 fixed top-0 w-full z-10">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="font-bold text-xl">Общепит</a>
+            <a href="/menu" class="font-bold text-xl">Меню</a>
             <a href="{{ route('cart.index') }}" class="bg-blue-500 text-white px-3 py-1 rounded">Корзина</a>
         </div>
     </header>

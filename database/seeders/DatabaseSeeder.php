@@ -22,9 +22,5 @@ class DatabaseSeeder extends Seeder
         $this->call([
             \Database\Seeders\OrderSeeder::class,
         ]);
-
-        $this->call([
-            \Database\Seeders\MakeAdminSeeder::class,
-        ]);
     }
 }

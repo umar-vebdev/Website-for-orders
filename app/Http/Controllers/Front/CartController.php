@@ -19,10 +19,12 @@ class CartController extends Controller
     }
 
     // Добавить блюдо в корзину
-    public function add(Request $request, Dish $dish)
+    public function add(Request $request, $id)
     {
         $clientId = $request->cookie('client_id');
         $cart = Cache::get("cart_$clientId", []);
+
+        $dish = Dish::findOrFail($id);
 
         if(isset($cart[$dish->id])) {
             $cart[$dish->id]['quantity']++;
@@ -36,16 +38,18 @@ class CartController extends Controller
             ];
         }
 
-        Cache::put("cart_$clientId", $cart, 60*24); // хранение 1 день
+        Cache::put("cart_$clientId", $cart, 60*24);
         return redirect()->back()->with('success', 'Добавлено в корзину!');
     }
 
     // Обновить количество
-    public function update(Request $request, Dish $dish)
+    public function update(Request $request, $id)
     {
         $clientId = $request->cookie('client_id');
         $cart = Cache::get("cart_$clientId", []);
 
+        $dish = Dish::findOrFail($id);
+        
         if(isset($cart[$dish->id])) {
             $cart[$dish->id]['quantity'] = $request->quantity;
             Cache::put("cart_$clientId", $cart, 60*24);
@@ -55,10 +59,12 @@ class CartController extends Controller
     }
 
     // Удалить блюдо
-    public function remove(Request $request, Dish $dish)
+    public function remove(Request $request, $id)
     {
         $clientId = $request->cookie('client_id');
         $cart = Cache::get("cart_$clientId", []);
+
+        $dish = Dish::findOrFail($id);
 
         if(isset($cart[$dish->id])) {
             unset($cart[$dish->id]);

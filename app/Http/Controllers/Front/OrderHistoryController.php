@@ -25,7 +25,6 @@ class OrderHistoryController extends Controller
     {
         $clientId = $request->cookie('client_id');
 
-        // Проверяем, что заказ принадлежит текущему пользователю
         if($order->client_id !== $clientId) {
             abort(403);
         }

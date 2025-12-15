@@ -12,26 +12,23 @@ class OrderController extends Controller
 {
     public function index() 
     {
-        $orders = Order::all()
-        ->orderBy('id', 'desc')
-        ->get();
+        $orders = Order::orderBy('id', 'desc')->get();
 
-        return view('admin.orders.index', compact('$orders'));
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function show(Order $order)
     {
         $order->load('items.dish');
-        return view('admin.orders.detail', compact('$order'));
+        return view('admin.orders.detail', compact('order'));
     }
 
-    public function updateStatus(Request $request, Order $order, $id)
+    public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:new,processing,completed,canceled'
+            'status' => 'required|in:new,processing,done,cancelled'
         ]);
 
-        $order = Order::findOrFail($id);  
         $order->status = $request->status;
         $order->save();
 

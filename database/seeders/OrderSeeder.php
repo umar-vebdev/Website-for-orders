@@ -27,7 +27,7 @@ class OrderSeeder extends Seeder
         // Позиции заказа
         OrderItem::create([
             'order_id' => $order->id,
-            'dish_id' => 1,
+            'dish_id' => 2,
             'quantity' => 2,
             'price' => 250,
             'weight' => 300

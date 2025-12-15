@@ -11,7 +11,7 @@ class Order extends Model
     public const STATUS_NEW = 'new';
     public const STATUS_PROCESSING = 'processing';
     public const STATUS_DONE = 'done';
-    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_CANCELLED = 'cancelled';    
 
     public static function getStatuses(): array
     {
