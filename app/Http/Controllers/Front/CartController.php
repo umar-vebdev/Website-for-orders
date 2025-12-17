@@ -73,7 +73,7 @@ class CartController extends Controller
 
         return redirect()->back();
     }
-
+    //Очистить корзину
     public function clear(Request $request)
     {
         $clientId = $request->cookie('client_id');
@@ -83,4 +83,47 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Корзина очищена!');
     }
     
+    //-1
+    public function decrement(Request $request, $id)
+    {
+        $clientId = $request->cookie('client_id');
+        $cart = Cache::get("cart_$clientId", []);
+
+        $dish = Dish::findOrFail($id);
+
+        if(!isset($cart[$dish->id]))
+        {
+            return redirect()->back();
+        }
+
+        $cart[$dish->id]['quantity']--;
+
+        if($cart[$dish->id]['quantity'] <= 0)
+        {
+            unset($cart[$dish->id]);
+        }
+
+        Cache::put("cart_$clientId", $cart, 60 * 24);
+
+        return redirect()->back();
+    }
+
+    public function increment(Request $request, $id)
+    {
+        $clientId = $request->cookie('client_id');
+        $cart = Cache::get("cart_$clientId", []);
+
+        $dish = Dish::findOrFail($id);
+
+        if(!isset($cart[$dish->id]))
+        {
+            return redirect()->back();
+        }
+
+        $cart[$dish->id]['quantity']++;
+
+        Cache::put("cart_$clientId", $cart, 60 * 24);
+
+        return redirect()->back();
+    }
 }

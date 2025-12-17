@@ -10,7 +10,7 @@
         <input name="name" placeholder="Название" class="border p-2 w-full" required>
         <input name="price" placeholder="Цена" class="border p-2 w-full" required>
         <input name="weight" placeholder="Вес (г)" class="border p-2 w-full" required>
-        <input type="file" name="image" class="border p-2 w-full">
+        <input type="file" name="photo_path" class="border p-2 w-full"> {{-- исправлено имя поля --}}
 
         <button class="bg-blue-500 text-white px-4 py-2 rounded">Сохранить</button>
     </form>

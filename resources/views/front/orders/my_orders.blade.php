@@ -14,15 +14,18 @@
                         class="block p-4 bg-gray-100 rounded-lg shadow hover:bg-gray-200">
                         Заказ №{{ $order->id }} — {{ $order->created_at->format('d.m.Y H:i') }}
                         <span class="ml-2 px-2 py-1 bg-blue-200 text-blue-900 rounded text-sm">
-                            @switch($order->status)
-                                @case('new') Новый @break
-                                @case('processing') В обработке @break
-                                @case('completed') Завершён @break
-                                @case('canceled') Отменён @break
-                                @default Неизвестно
-                            @endswitch
+                            @if($order->status === 'new')
+                                Новый
+                            @elseif($order->status === 'processing')
+                                В обработке
+                            @elseif($order->status === 'done')
+                                Завершён
+                            @elseif($order->status === 'cancelled')
+                                Отменён
+                            @else
+                                Новый
+                            @endif
                         </span>
-                        
                     </a>
                 </li>
             @endforeach

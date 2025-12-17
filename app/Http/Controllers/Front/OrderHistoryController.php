@@ -16,7 +16,7 @@ class OrderHistoryController extends Controller
         $orders = Order::where('client_id', $clientId)
                         ->orderBy('id', 'desc')
                         ->get();
-
+        
         return view('front.orders.my_orders', compact('orders'));
     }
 

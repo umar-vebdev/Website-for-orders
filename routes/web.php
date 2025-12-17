@@ -10,16 +10,16 @@ use App\Http\Controllers\Admin\AdminRegisterController;
 use App\Http\Controllers\Admin\AdminAuthController;
 
 //--Client--
+Route::get('/', [\App\Http\Controllers\Front\MenuController::class, 'dishes']);
 // Корзина
-Route::get('/', function(){
-    return view('welcome');
-});
 Route::prefix('cart')->group(function () {
     Route::get('/', [\App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
     Route::post('/add/{id}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
     Route::post('/update/{id}', [\App\Http\Controllers\Front\CartController::class, 'update'])->name('cart.update');
     Route::post('/remove/{id}', [\App\Http\Controllers\Front\CartController::class, 'remove'])->name('cart.remove');
     Route::post('/clear', [\App\Http\Controllers\Front\CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/decrement/{id}', [\App\Http\Controllers\Front\CartController::class, 'decrement'])->name('decrement');
+    Route::post('/increment/{id}', [\App\Http\Controllers\Front\CartController::class, 'increment'])->name('increment');
 });
 
 
@@ -30,6 +30,7 @@ Route::post('/checkout', [\App\Http\Controllers\Front\CheckoutController::class,
 // Мои заказы
 Route::get('/my-orders', [\App\Http\Controllers\Front\OrderHistoryController::class, 'index'])->name('my.orders');
 Route::get('/my-orders/{order}', [\App\Http\Controllers\Front\OrderHistoryController::class, 'show'])->name('my.orders.show');
+
 
 Route::get('/menu', [\App\Http\Controllers\Front\MenuController::class, 'dishes'])->name('menu');
 Route::post('/menu/add/{dish}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');

@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Общепит</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
+    <title>@yield('title', 'Общепит')</title>
+
+    <!-- Tailwind через CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-900 text-gray-100 font-sans">
 
-    <!-- Header -->
-    <header class="bg-white shadow p-4 fixed top-0 w-full z-10">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/menu" class="font-bold text-xl">Меню</a>
-            <a href="{{ route('cart.index') }}" class="bg-blue-500 text-white px-3 py-1 rounded">Корзина</a>
+    <!-- Навигация -->
+    <nav class="bg-gray-800 shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div class="text-xl font-bold text-white">Общепит</div>
+            <ul class="flex gap-6">
+                <li><a href="{{ route('menu') }}" class="hover:text-blue-400 transition">Меню</a></li>
+                <li><a href="{{ route('cart.index') }}" class="hover:text-blue-400 transition">Корзина</a></li>
+                <li><a href="{{ route('my.orders') }}" class="hover:text-blue-400 transition">Мои заказы</a></li>
+            </ul>
         </div>
-    </header>
+    </nav>
 
-    <!-- Content -->
-    <main class="pt-20 pb-10">
+    <main class="container mx-auto p-4">
         @yield('content')
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-white shadow p-4 text-center text-gray-500 fixed bottom-0 w-full">
-        &copy; {{ date('Y') }} Общепит
-    </footer>
 
 </body>
 </html>

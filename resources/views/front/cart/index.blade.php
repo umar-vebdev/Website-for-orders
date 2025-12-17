@@ -39,6 +39,14 @@
                                 @csrf
                                 <button type="submit" class="text-red-500 hover:underline">Удалить</button>
                             </form>
+                            <form action="{{ route('decrement', $dishId) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="text-red-500 hover:underline">-</button>
+                            </form>
+                            <form action="{{ route('increment', $dishId) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="text-red-500 hover:underline">+</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach
