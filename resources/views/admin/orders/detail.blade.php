@@ -1,40 +1,36 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Заказ №'.$order->id)
 
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Заказ №{{ $order->id }}</h1>
-    <div class="mb-4 text-gray-600">Дата: {{ $order->created_at->format('d.m.Y H:i') }}</div>
+<div class="container mx-auto p-4 max-w-md sm:max-w-lg md:max-w-2xl">
 
-    <h2 class="font-semibold mb-2">Позиции заказа</h2>
-    <table class="w-full bg-white shadow rounded-lg overflow-hidden mb-4">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="p-2 text-left">Блюдо</th>
-                <th class="p-2 text-left">Цена</th>
-                <th class="p-2 text-left">Вес</th>
-                <th class="p-2 text-left">Количество</th>
-                <th class="p-2 text-left">Сумма</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($order->items as $item)
-            <tr class="border-t">
-                <td class="p-2">{{ $item->dish->name }}</td>
-                <td class="p-2">{{ $item->price }} ₽</td>
-                <td class="p-2">{{ $item->weight }} г</td>
-                <td class="p-2">{{ $item->quantity }}</td>
-                <td class="p-2">{{ $item->price * $item->quantity }} ₽</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <h1 class="text-2xl font-bold text-white mb-4">Заказ №{{ $order->id }}</h1>
+    <div class="mb-4 text-slate-400 text-sm">Дата: {{ $order->created_at->format('d.m.Y H:i') }}</div>
 
-    <div class="font-bold text-right mb-4">
+    {{-- Позиции заказа --}}
+    <h2 class="font-semibold text-white mb-2">Позиции заказа</h2>
+    <div class="space-y-2">
+        @foreach($order->items as $item)
+            <div class="flex justify-between items-center p-3 bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition">
+                <div class="flex-1 min-w-0">
+                    <div class="text-white font-semibold truncate">{{ $item->dish->name }}</div>
+                    <div class="text-slate-400 text-xs sm:text-sm">{{ $item->weight }} г × {{ $item->quantity }}</div>
+                </div>
+                <div class="text-white font-semibold ml-4">
+                    {{ $item->price * $item->quantity }} ₽
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <div class="text-right font-bold text-lg text-white mt-3 mb-4">
         Итог: {{ $order->total_price }} ₽
     </div>
 
-    <h2 class="font-semibold mb-2">Контакты клиента</h2>
-    <div class="mb-4">
+    {{-- Контакты --}}
+    <h2 class="font-semibold text-white mb-2">Контакты клиента</h2>
+    <div class="space-y-1 mb-4 text-slate-300 text-sm">
         <div><strong>Имя:</strong> {{ $order->name }}</div>
         <div><strong>Телефон:</strong> {{ $order->phone }}</div>
         <div><strong>Адрес:</strong> {{ $order->address }}</div>
@@ -43,17 +39,21 @@
         @endif
     </div>
 
-    <h2 class="font-semibold mb-2">Статус заказа</h2>
-    <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="mb-4">
+    {{-- Статус заказа --}}
+    <h2 class="font-semibold text-white mb-2">Статус заказа</h2>
+    <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="flex gap-2 mb-4">
         @csrf
-        <select name="status" class="border p-2 rounded">
+        <select name="status" class="flex-1 bg-gray-800 text-white border border-slate-700 rounded px-2 py-1">
             @foreach(\App\Models\Order::getStatuses() as $key => $label)
-                <option value="{{ $key }}" {{ $order->status === $key ? 'selected' : '' }}>{{ $label }}</option>
+                <option value="{{ $key }}" {{ $order->status === $key ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
             @endforeach
         </select>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded ml-2">Обновить</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded transition">Обновить</button>
     </form>
 
-    <a href="{{ route('admin.orders') }}" class="text-blue-500 hover:underline">&laquo; Назад к списку заказов</a>
+    <a href="{{ route('admin.orders') }}" class="text-blue-400 hover:text-blue-300 text-sm">&laquo; Назад к списку заказов</a>
+
 </div>
 @endsection

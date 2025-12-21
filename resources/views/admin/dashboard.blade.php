@@ -1,22 +1,36 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Панель админа')
 
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Панель администратора</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-    <div class="space-y-2">
-        <a href="{{ route('admin.dishes') }}" class="block p-4 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Управление блюдами
-        </a>
+    {{-- Управление блюдами --}}
+    <a href="{{ route('admin.dishes') }}" class="flex items-center gap-4 p-6 border border-blue-500 rounded-xl shadow hover:scale-105 transition transform text-blue-400 hover:text-white">
+        <i class="fas fa-utensils fa-2x"></i>
+        <div class="font-semibold text-lg">Управление блюдами</div>
+    </a>
 
-        <a href="{{ route('admin.orders') }}" class="block p-4 bg-green-500 text-white rounded hover:bg-green-600">
-            Управление заказами
-        </a>
+    {{-- Управление заказами --}}
+    <a href="{{ route('admin.orders') }}" class="flex items-center gap-4 p-6 border border-green-500 rounded-xl shadow hover:scale-105 transition transform text-green-400 hover:text-white">
+        <i class="fas fa-receipt fa-2x"></i>
+        <div class="font-semibold text-lg">Управление заказами</div>
+    </a>
 
-        <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
-            @csrf
-            <button type="submit" class="text-red-500 hover:underline">Выйти</button>
-        </form>
-    </div>
+    {{-- Добавить администратора --}}
+    <a href="{{ route('admin.register') }}" class="flex items-center gap-4 p-6 border border-purple-500 rounded-xl shadow hover:scale-105 transition transform text-purple-400 hover:text-white">
+        <i class="fas fa-user-plus fa-2x"></i>
+        <div class="font-semibold text-lg">Добавить администратора</div>
+    </a>
+
+    {{-- Выход --}}
+    <form action="{{ route('admin.logout') }}" method="POST" class="col-span-full">
+        @csrf
+        <button type="submit" class="w-full p-4 border border-red-500 rounded-xl shadow hover:scale-105 transition transform text-red-400 hover:text-white flex items-center justify-center gap-2">
+            <i class="fas fa-sign-out-alt"></i>
+            Выйти
+        </button>
+    </form>
+
 </div>
 @endsection

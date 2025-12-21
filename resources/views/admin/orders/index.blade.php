@@ -1,52 +1,52 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Все заказы')
 
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Все заказы</h1>
+<div class="container mx-auto p-4 max-w-md sm:max-w-xl md:max-w-3xl">
 
     @if($orders->isEmpty())
-        <p>Заказов пока нет.</p>
+        <p class="text-gray-400">Заказов пока нет.</p>
     @else
-        <table class="w-full bg-white shadow rounded-lg overflow-hidden">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-2 text-left">#</th>
-                    <th class="p-2 text-left">Клиент</th>
-                    <th class="p-2 text-left">Телефон</th>
-                    <th class="p-2 text-left">Дата</th>
-                    <th class="p-2 text-left">Сумма</th>
-                    <th class="p-2 text-left">Статус</th>
-                    <th class="p-2 text-left">Действие</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($orders as $order)
-                <tr class="border-t">
-                    <td class="p-2">{{ $order->id }}</td>
-                    <td class="p-2">{{ $order->name }}</td>
-                    <td class="p-2">{{ $order->phone }}</td>
-                    <td class="p-2">{{ $order->created_at->format('d.m.Y H:i') }}</td>
-                    <td class="p-2">{{ $order->total_price }} ₽</td>
-                    <td class="p-2">
-                        <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}">
+        <div class="space-y-3">
+            @foreach($orders as $order)
+                <div class="flex flex-wrap items-center gap-2 p-3 bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition w-full overflow-hidden">
+
+                    {{-- Иконка или фото --}}
+                    <div class="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded-xl text-white font-bold text-lg">
+                        {{ $order->id }}
+                    </div>
+
+                    {{-- Информация --}}
+                    <div class="flex-1 min-w-0">
+                        <div class="text-white font-semibold truncate text-sm sm:text-base">{{ $order->name }}</div>
+                        <div class="text-xs sm:text-sm text-slate-400 truncate">{{ $order->phone }} • {{ $order->created_at->format('d.m.Y H:i') }}</div>
+                        <div class="text-sm sm:text-lg font-semibold mt-1">{{ $order->total_price }} ₽</div>
+                    </div>
+
+                    {{-- Действия --}}
+                    <div class="flex flex-wrap items-center gap-1 mt-2 sm:mt-0">
+                        <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="flex items-center gap-1 flex-shrink-0">
                             @csrf
-                            <select name="status">
+                            <select name="status" class="bg-gray-800 text-white text-xs sm:text-sm rounded px-2 py-1 border border-slate-700">
                                 @foreach(\App\Models\Order::getStatuses() as $key => $label)
                                     <option value="{{ $key }}" {{ $order->status === $key ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded ml-1">Сохранить</button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm rounded px-2 py-1 transition">Сохранить</button>
                         </form>
-                    </td>
-                    <td class="p-2">
-                        <a href="{{ route('admin.orders.show', $order->id) }}" class="text-blue-500 hover:underline">Просмотр</a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+                        <a href="{{ route('admin.orders.show', $order->id) }}" class="bg-gray-700/50 hover:bg-gray-700 text-blue-400 hover:text-blue-300 text-xs sm:text-sm rounded px-2 py-1 transition flex-shrink-0">
+                            Просмотр
+                        </a>
+                    </div>
+
+                </div>
+            @endforeach
+        </div>
     @endif
 </div>
 @endsection
+

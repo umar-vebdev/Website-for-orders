@@ -45,7 +45,8 @@ class CheckoutController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'total_price' => $total,
-            'status' => 'new'
+            'status' => 'new',
+            'description' => $request->description,
         ]);
 
         // Сохраняем позиции

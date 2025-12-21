@@ -1,39 +1,55 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', isset($dish) ? 'Редактировать блюдо' : 'Добавить блюдо')
 
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">{{ isset($dish) ? 'Редактировать блюдо' : 'Добавить блюдо' }}</h1>
+<div class="max-w-md mx-auto p-4 bg-gray-900/80 backdrop-blur rounded-xl shadow-md">
+    <h1 class="text-xl md:text-2xl font-bold mb-4 text-white">
+        {{ isset($dish) ? 'Редактировать блюдо' : 'Добавить блюдо' }}
+    </h1>
 
-    <form action="{{ isset($dish) ? route('admin.dishes.update', $dish->id) : route('admin.dishes.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ isset($dish) ? route('admin.dishes.update', $dish->id) : route('admin.dishes.store') }}" 
+          method="POST" enctype="multipart/form-data" class="space-y-4">
         @csrf
         @if(isset($dish))
             @method('PUT')
         @endif
 
-        <div class="mb-2">
-            <label class="block">Название</label>
-            <input type="text" name="name" value="{{ $dish->name ?? '' }}" class="border p-2 w-full" required>
+        {{-- Название --}}
+        <div>
+            <label class="block text-gray-300 mb-1">Название</label>
+            <input type="text" name="name" value="{{ $dish->name ?? '' }}" 
+                   class="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" required>
         </div>
 
-        <div class="mb-2">
-            <label class="block">Цена</label>
-            <input type="number" name="price" value="{{ $dish->price ?? '' }}" class="border p-2 w-full" required>
+        {{-- Цена --}}
+        <div>
+            <label class="block text-gray-300 mb-1">Цена</label>
+            <input type="number" name="price" value="{{ $dish->price ?? '' }}" 
+                   class="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" required>
         </div>
 
-        <div class="mb-2">
-            <label class="block">Вес</label>
-            <input type="number" name="weight" value="{{ $dish->weight ?? '' }}" class="border p-2 w-full" required>
+        {{-- Вес --}}
+        <div>
+            <label class="block text-gray-300 mb-1">Вес (г)</label>
+            <input type="number" name="weight" value="{{ $dish->weight ?? '' }}" 
+                   class="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" required>
         </div>
 
-        <div class="mb-2">
-            <label class="block">Фото</label>
-            <input type="file" name="photo_path" class="border p-2 w-full">
+        {{-- Фото --}}
+        <div>
+            <label class="block text-gray-300 mb-1">Фото</label>
+            <input type="file" name="photo_path" class="w-full text-gray-200">
             @if(isset($dish) && $dish->photo_path)
-                <img src="{{ asset('storage/'.$dish->photo_path) }}" class="w-16 h-16 mt-2">
+                <img src="{{ asset('storage/'.$dish->photo_path) }}" class="w-20 h-20 mt-2 rounded object-cover">
             @endif
         </div>
 
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">{{ isset($dish) ? 'Сохранить' : 'Добавить' }}</button>
+        {{-- Кнопка --}}
+        <button type="submit" 
+                class="w-full py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded shadow hover:from-blue-500 hover:to-blue-700 transition">
+            {{ isset($dish) ? 'Сохранить' : 'Добавить' }}
+        </button>
     </form>
 </div>
 @endsection

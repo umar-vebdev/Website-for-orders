@@ -1,33 +1,47 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Регистрация администратора')
 
 @section('content')
-<div class="container mx-auto p-4 max-w-md">
-    <h1 class="text-2xl font-bold mb-4">Регистрация администратора</h1>
+<div class="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md mt-6">
+
+    <h1 class="text-2xl font-bold text-white mb-4">Регистрация администратора</h1>
 
     <form action="{{ route('admin.register') }}" method="POST" class="space-y-4">
         @csrf
 
         <div>
-            <label class="block mb-1">Имя</label>
-            <input type="text" name="name" class="w-full border p-2 rounded" required>
+            <label class="block mb-1 text-gray-300">Имя</label>
+            <input type="text" name="name" 
+                   class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                   required>
         </div>
 
         <div>
-            <label class="block mb-1">Email</label>
-            <input type="email" name="email" class="w-full border p-2 rounded" required>
+            <label class="block mb-1 text-gray-300">Email</label>
+            <input type="email" name="email" 
+                   class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                   required>
         </div>
 
         <div>
-            <label class="block mb-1">Пароль</label>
-            <input type="password" name="password" class="w-full border p-2 rounded" required>
+            <label class="block mb-1 text-gray-300">Пароль</label>
+            <input type="password" name="password" 
+                   class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                   required>
         </div>
 
         <div>
-            <label class="block mb-1">Повтор пароля</label>
-            <input type="password" name="password_confirmation" class="w-full border p-2 rounded" required>
+            <label class="block mb-1 text-gray-300">Повтор пароля</label>
+            <input type="password" name="password_confirmation" 
+                   class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                   required>
         </div>
 
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Зарегистрировать</button>
+        <button type="submit" class="w-full py-2 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 text-white font-semibold rounded shadow-md transition">
+            Зарегистрировать
+        </button>
     </form>
+
 </div>
 @endsection

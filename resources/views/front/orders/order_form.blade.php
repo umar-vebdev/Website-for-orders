@@ -1,31 +1,88 @@
-@extends('layouts.app')
+@extends('layouts.front')
+
+@section('title', 'Оформление заказа')
 
 @section('content')
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Оформление заказа</h1>
+<div class="max-w-3xl mx-auto px-4 py-6">
 
-    @if(session('error'))
-        <p class="text-red-500 mb-2">{{ session('error') }}</p>
-    @endif
+    <h1 class="text-2xl md:text-3xl font-semibold mb-6">
+        Оформление заказа
+    </h1>
 
-    <form action="{{ route('checkout.store') }}" method="POST">
+    <form
+        action="{{ route('checkout.store') }}"
+        method="POST"
+        class="space-y-4"
+    >
         @csrf
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Имя</label>
-            <input type="text" name="name" class="border p-2 w-full" required>
+
+        {{-- Имя --}}
+        <div>
+            <label class="block text-sm text-slate-400 mb-1">Имя</label>
+            <input
+                type="text"
+                name="name"
+                required
+                class="w-full px-4 py-3 rounded-xl
+                       bg-[#020617] border border-slate-700
+                       text-white focus:outline-none focus:border-blue-600"
+            >
         </div>
 
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Телефон</label>
-            <input type="text" name="phone" class="border p-2 w-full" required>
+        {{-- Телефон --}}
+        <div>
+            <label class="block text-sm text-slate-400 mb-1">Телефон</label>
+            <input
+                type="text"
+                name="phone"
+                required
+                class="w-full px-4 py-3 rounded-xl
+                       bg-[#020617] border border-slate-700
+                       text-white focus:outline-none focus:border-blue-600"
+            >
         </div>
 
-        <div class="mb-4">
-            <label class="block font-semibold mb-1">Адрес</label>
-            <input type="text" name="address" class="border p-2 w-full" required>
+        {{-- Адрес --}}
+        <div>
+            <label class="block text-sm text-slate-400 mb-1">Адрес</label>
+            <input
+                type="text"
+                name="address"
+                required
+                class="w-full px-4 py-3 rounded-xl
+                       bg-[#020617] border border-slate-700
+                       text-white focus:outline-none focus:border-blue-600"
+            >
         </div>
 
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Отправить заказ</button>
+        {{-- Комментарий --}}
+        <div>
+            <label class="block text-sm text-slate-400 mb-1">
+                Комментарий к заказу
+            </label>
+            <textarea
+                name="description"
+                rows="4"
+                placeholder="Например: без лука, позвонить перед доставкой"
+                class="w-full px-4 py-3 rounded-xl
+                       bg-[#020617] border border-slate-700
+                       text-white placeholder-slate-500
+                       focus:outline-none focus:border-blue-600 resize-none"
+            ></textarea>
+        </div>
+
+        {{-- Кнопка --}}
+        <button
+            type="submit"
+            class="w-full mt-4 py-4 rounded-xl
+                   bg-gradient-to-r from-blue-600 to-blue-800
+                   hover:from-blue-500 hover:to-blue-700
+                   text-white font-medium transition"
+        >
+            Подтвердить заказ
+        </button>
+
     </form>
+
 </div>
 @endsection

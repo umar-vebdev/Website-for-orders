@@ -19,7 +19,7 @@ class DishController extends Controller
     // Форма создания
     public function create()
     {
-        return view('admin.dishes.create');
+        return view('admin.dishes.form');
     }
 
     // Сохранение нового блюда
@@ -50,7 +50,7 @@ class DishController extends Controller
     public function edit($id)
     {
         $dish = Dish::findOrFail($id);
-        return view('admin.dishes.edit', compact('dish'));
+        return view('admin.dishes.form', compact('dish'));
     }
 
     // Обновление блюда

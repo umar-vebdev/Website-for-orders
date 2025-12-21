@@ -39,7 +39,7 @@ class CartController extends Controller
         }
 
         Cache::put("cart_$clientId", $cart, 60*24);
-        return redirect()->back()->with('success', 'Добавлено в корзину!');
+        return redirect()->view('cart.index');
     }
 
     // Обновить количество
@@ -82,48 +82,38 @@ class CartController extends Controller
     
         return redirect()->back()->with('success', 'Корзина очищена!');
     }
+
+    public function addMultiple(Request $request)
+    {
+        $clientId = $request->cookie('client_id');
+        $cart = Cache::get("cart_$clientId", []);
     
-    //-1
-    public function decrement(Request $request, $id)
-    {
-        $clientId = $request->cookie('client_id');
-        $cart = Cache::get("cart_$clientId", []);
-
-        $dish = Dish::findOrFail($id);
-
-        if(!isset($cart[$dish->id]))
-        {
-            return redirect()->back();
+        foreach ($request->items as $item) {
+            $qty = (int) $item['quantity'];
+    
+            // ❗ защита
+            if ($qty <= 0) {
+                continue;
+            }
+    
+            $dish = Dish::findOrFail($item['dish_id']);
+    
+            if (isset($cart[$dish->id])) {
+                $cart[$dish->id]['quantity'] += $qty;
+            } else {
+                $cart[$dish->id] = [
+                    'name' => $dish->name,
+                    'price' => $dish->price,
+                    'weight' => $dish->weight,
+                    'quantity' => $qty,
+                    'photo' => $dish->photo_path,
+                ];
+            }
         }
-
-        $cart[$dish->id]['quantity']--;
-
-        if($cart[$dish->id]['quantity'] <= 0)
-        {
-            unset($cart[$dish->id]);
-        }
-
+    
         Cache::put("cart_$clientId", $cart, 60 * 24);
-
-        return redirect()->back();
+    
+        return response()->noContent(); // без json и без сообщений
     }
-
-    public function increment(Request $request, $id)
-    {
-        $clientId = $request->cookie('client_id');
-        $cart = Cache::get("cart_$clientId", []);
-
-        $dish = Dish::findOrFail($id);
-
-        if(!isset($cart[$dish->id]))
-        {
-            return redirect()->back();
-        }
-
-        $cart[$dish->id]['quantity']++;
-
-        Cache::put("cart_$clientId", $cart, 60 * 24);
-
-        return redirect()->back();
-    }
+    
 }
