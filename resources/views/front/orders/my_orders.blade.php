@@ -1,5 +1,7 @@
 @extends('layouts.front')
 
+@section('title', 'Мои заказы')
+
 @section('content')
 <div class="container mx-auto p-4">
 

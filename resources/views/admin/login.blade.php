@@ -1,5 +1,7 @@
 @extends('layouts.front')
 
+@section('title', 'Вход для админа')
+
 @section('content')
 <div class="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md mt-6">
 
