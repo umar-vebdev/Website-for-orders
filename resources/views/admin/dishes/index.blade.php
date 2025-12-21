@@ -5,6 +5,15 @@
 @section('content')
 <div class="container mx-auto p-2 space-y-2">
 
+    {{-- Кнопка добавления блюда --}}
+    <div class="flex justify-end mb-2">
+        <a href="{{ route('admin.dishes.create') }}"
+           class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800
+                  hover:from-blue-500 hover:to-blue-700 text-white rounded shadow transition">
+            Добавить блюдо
+        </a>
+    </div>
+
     @foreach($dishes as $dish)
         <div class="flex flex-wrap items-center gap-2 p-2 bg-gray-900/80 rounded-xl shadow-md hover:bg-gray-800/70 transition w-full">
 
@@ -20,21 +29,22 @@
                 <p class="text-gray-200 font-medium text-sm sm:text-base">{{ number_format($dish->price, 0, ',', ' ') }} ₽</p>
             </div>
 
-            {{-- Действия --}}
-            <div class="flex gap-1 flex-shrink-0 mt-2 sm:mt-0">
+            {{-- Действия вертикально --}}
+            <div class="flex flex-col gap-1 flex-shrink-0 mt-2 sm:mt-0">
                 <a href="{{ route('admin.dishes.edit', $dish->id) }}" 
-                   class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs sm:text-sm whitespace-nowrap">
+                   class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs sm:text-sm whitespace-nowrap text-center">
                     Редактировать
                 </a>
                 <form action="{{ route('admin.dishes.destroy', $dish->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 
-                            class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs sm:text-sm whitespace-nowrap">
+                            class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs sm:text-sm whitespace-nowrap text-center">
                         Удалить
                     </button>
                 </form>
             </div>
+
         </div>
     @endforeach
 

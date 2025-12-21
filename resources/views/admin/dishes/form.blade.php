@@ -4,9 +4,6 @@
 
 @section('content')
 <div class="max-w-md mx-auto p-4 bg-gray-900/80 backdrop-blur rounded-xl shadow-md">
-    <h1 class="text-xl md:text-2xl font-bold mb-4 text-white">
-        {{ isset($dish) ? 'Редактировать блюдо' : 'Добавить блюдо' }}
-    </h1>
 
     <form action="{{ isset($dish) ? route('admin.dishes.update', $dish->id) : route('admin.dishes.store') }}" 
           method="POST" enctype="multipart/form-data" class="space-y-4">

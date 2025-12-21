@@ -5,7 +5,6 @@
 @section('content')
 <div class="container mx-auto p-4 max-w-md sm:max-w-lg md:max-w-2xl">
 
-    <h1 class="text-2xl font-bold text-white mb-4">Заказ №{{ $order->id }}</h1>
     <div class="mb-4 text-slate-400 text-sm">Дата: {{ $order->created_at->format('d.m.Y H:i') }}</div>
 
     {{-- Позиции заказа --}}
