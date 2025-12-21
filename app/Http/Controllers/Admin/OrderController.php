@@ -32,6 +32,6 @@ class OrderController extends Controller
         $order->status = $request->status;
         $order->save();
 
-        return redirect()->back()->with('success', 'Статус заказа обновлен!');
+        return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
     }
 }

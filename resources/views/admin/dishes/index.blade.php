@@ -3,50 +3,78 @@
 @section('title', 'Блюда')
 
 @section('content')
-<div class="container mx-auto p-2 space-y-2">
 
-    {{-- Кнопка добавления блюда --}}
-    <div class="flex justify-end mb-2">
-        <a href="{{ route('admin.dishes.create') }}"
-           class="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800
-                  hover:from-blue-500 hover:to-blue-700 text-white rounded shadow transition">
-            Добавить блюдо
-        </a>
-    </div>
+{{-- Кнопка добавления --}}
+<div class="flex justify-end mb-4">
+    <a href="{{ route('admin.dishes.create') }}"
+       class="px-4 py-2
+              bg-gradient-to-r from-blue-600 to-blue-800
+              hover:from-blue-500 hover:to-blue-700
+              text-white rounded-xl shadow transition">
+        Добавить блюдо
+    </a>
+</div>
+
+<div class="flex flex-col gap-2 w-full overflow-x-hidden">
 
     @foreach($dishes as $dish)
-        <div class="flex flex-wrap items-center gap-2 p-2 bg-gray-900/80 rounded-xl shadow-md hover:bg-gray-800/70 transition w-full">
+        <div
+            class="flex items-center gap-2 p-2 rounded-xl
+                   bg-[#020617]/90 border border-slate-800
+                   hover:bg-[#020617] transition
+                   w-full overflow-hidden"
+        >
 
             {{-- Фото --}}
-            <img src="{{ asset('storage/' . $dish->photo_path) }}" 
-                 alt="{{ $dish->name }}" 
-                 class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded-xl flex-shrink-0">
+            <img
+                src="{{ asset('storage/' . $dish->photo_path) }}"
+                alt="{{ $dish->name }}"
+                class="w-16 h-16 sm:w-20 sm:h-20
+                       object-cover rounded-lg flex-shrink-0"
+            >
 
             {{-- Информация --}}
             <div class="flex-1 min-w-0">
-                <h2 class="text-sm sm:text-base md:text-lg font-semibold text-white truncate">{{ $dish->name }}</h2>
-                <p class="text-gray-400 text-xs sm:text-sm">{{ $dish->weight }} г</p>
-                <p class="text-gray-200 font-medium text-sm sm:text-base">{{ number_format($dish->price, 0, ',', ' ') }} ₽</p>
+                <h2 class="text-sm sm:text-base font-medium text-white truncate">
+                    {{ $dish->name }}
+                </h2>
+                <div class="text-xs sm:text-sm text-slate-400">
+                    {{ $dish->weight }} г
+                </div>
+                <div class="mt-0.5 text-sm sm:text-base font-semibold text-white">
+                    {{ number_format($dish->price, 0, ',', ' ') }} ₽
+                </div>
             </div>
 
-            {{-- Действия вертикально --}}
-            <div class="flex flex-col gap-1 flex-shrink-0 mt-2 sm:mt-0">
-                <a href="{{ route('admin.dishes.edit', $dish->id) }}" 
-                   class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs sm:text-sm whitespace-nowrap text-center">
+            {{-- Действия (как в меню — компактно) --}}
+            <div class="flex flex-col gap-1 flex-shrink-0">
+
+                <a href="{{ route('admin.dishes.edit', $dish->id) }}"
+                   class="px-3 py-1 text-xs sm:text-sm
+                          bg-gradient-to-r from-blue-600 to-blue-800
+                          hover:from-blue-500 hover:to-blue-700
+                          text-white rounded-lg text-center transition">
                     Редактировать
                 </a>
+
                 <form action="{{ route('admin.dishes.destroy', $dish->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" 
-                            class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-xs sm:text-sm whitespace-nowrap text-center">
+                    <button
+                        type="submit"
+                        class="px-3 py-1 text-xs sm:text-sm
+                               bg-gradient-to-r from-red-600 to-red-800
+                               hover:from-red-500 hover:to-red-700
+                               text-white rounded-lg w-full transition">
                         Удалить
                     </button>
                 </form>
+
             </div>
 
         </div>
     @endforeach
 
 </div>
+
 @endsection
