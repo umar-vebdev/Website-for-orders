@@ -8,8 +8,9 @@
     Меню
 </h1>
 
-{{-- Контейнер со скроллом --}}
-<div class="px-2 max-h-[60vh] overflow-y-auto rounded-xl">
+<div class="max-w-3xl mx-auto px-2 mb-20 relative">
+
+    {{-- Список блюд --}}
     <div id="menu-list" class="flex flex-col gap-2 w-full">
         @foreach($dishes as $dish)
             <div
@@ -45,8 +46,11 @@
                     <input
                         id="qty-{{ $dish->id }}"
                         value="0"
-                        readonly
+                        type="text"
+                        inputmode="numeric"
+                        pattern="\d*"
                         class="w-8 text-center bg-transparent text-white text-xs focus:outline-none"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                     >
                     <button
                         class="w-7 h-7 flex items-center justify-center text-white bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 transition"
@@ -56,32 +60,33 @@
             </div>
         @endforeach
     </div>
+
 </div>
 
-{{-- Кнопка добавить выбранные блюда --}}
-<div class="px-2 mt-3 flex justify-center">
+{{-- Кнопка "В корзину" фиксированная выше футера --}}
+<div class="fixed bottom-20 left-0 w-full flex justify-center z-40 px-2 pointer-events-auto">
     <button
         id="add-all-to-cart"
-        class="w-12 h-12 flex items-center justify-center
-               bg-gradient-to-r from-blue-600 to-blue-800
-               hover:from-blue-500 hover:to-blue-700
-               text-white text-2xl font-medium rounded-full shadow-lg transition"
-        title="Добавить выбранные блюда в корзину"
+        class="w-full sm:w-80 py-3 bg-gradient-to-r from-blue-600 to-blue-800
+               hover:from-blue-500 hover:to-blue-700 text-white font-medium rounded-xl shadow-lg transition"
     >
-        <i class="fas fa-plus"></i>
+        В корзину
     </button>
 </div>
+
+
 
 @push('scripts')
 <script>
 function increment(id) {
     const input = document.getElementById('qty-' + id);
-    input.value = parseInt(input.value) + 1;
+    input.value = parseInt(input.value || 0) + 1;
 }
 function decrement(id) {
     const input = document.getElementById('qty-' + id);
     if (parseInt(input.value) > 0) input.value = parseInt(input.value) - 1;
 }
+
 document.getElementById('add-all-to-cart').addEventListener('click', function () {
     const items = [];
     document.querySelectorAll('#menu-list > div').forEach(item => {

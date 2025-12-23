@@ -24,6 +24,7 @@ class CheckoutController extends Controller
             'name' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
+            'description' => 'string|nullable',
         ]);
 
         $clientId = $request->cookie('client_id');

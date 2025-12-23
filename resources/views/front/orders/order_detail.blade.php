@@ -3,12 +3,12 @@
 @section('title', 'Заказ №'.$order->id)
 
 @section('content')
-<div class="container mx-auto p-4 max-w-md sm:max-w-lg md:max-w-2xl">
+{{-- Дата заказа --}}
+<div class="mb-4 text-slate-400 text-sm">
+    Дата: {{ $order->created_at->format('d.m.Y H:i') }}
+</div>
 
-    {{-- Дата заказа --}}
-    <div class="mb-4 text-slate-400 text-sm">
-        Дата: {{ $order->created_at->format('d.m.Y H:i') }}
-    </div>
+<div class="container mx-auto p-4 max-w-md sm:max-w-lg md:max-w-2xl">
 
     {{-- Позиции заказа --}}
     <h2 class="font-semibold text-white mb-2">Позиции заказа</h2>

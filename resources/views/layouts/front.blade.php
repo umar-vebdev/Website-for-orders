@@ -60,9 +60,12 @@
     </nav>
 </div>
 
-<main class="flex-1 max-w-6xl mx-auto px-4 py-6">
-    @yield('content')
+<main class="flex-1 px-4 py-6">
+    <div class="w-full">
+        @yield('content')
+    </div>
 </main>
+
 
 <footer class="border-t border-slate-800 text-slate-500 text-sm text-center py-4">
     © {{ date('Y') }} Delivery от печи. Все права защищены.

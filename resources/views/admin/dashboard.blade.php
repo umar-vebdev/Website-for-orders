@@ -23,6 +23,25 @@
         <div class="font-semibold text-lg">Добавить администратора</div>
     </a>
 
+    {{-- Список админов --}}
+    <div class="col-span-full p-6 border border-yellow-500 rounded-xl shadow bg-gray-900 text-white">
+        <div class="font-semibold text-lg mb-4">Список администраторов</div>
+        <ul class="space-y-2">
+            @foreach($admins as $admin)
+                <li class="flex justify-between items-center bg-gray-800 rounded p-2">
+                    <span>{{ $admin->name }} ({{ $admin->email }})</span>
+                    <form action="{{ route('admin.admins.delete', $admin->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-500 hover:text-red-400">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+
     {{-- Выход --}}
     <form action="{{ route('admin.logout') }}" method="POST" class="col-span-full">
         @csrf

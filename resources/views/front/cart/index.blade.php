@@ -4,11 +4,11 @@
 
 @section('content')
 
-<div class="w-full overflow-x-hidden px-2">
+<h1 class="text-2xl md:text-3xl font-semibold mb-2">
+    Корзина
+</h1>
 
-    <h1 class="text-2xl md:text-3xl font-semibold mb-2">
-        Корзина
-    </h1>
+<div class="w-full overflow-x-hidden px-2">
 
     @if(count($cart) === 0)
         <div class="text-slate-400 text-center mt-10 px-2">

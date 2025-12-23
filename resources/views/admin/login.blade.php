@@ -3,9 +3,8 @@
 @section('title', 'Вход для админа')
 
 @section('content')
+<h1 class="text-2xl font-bold text-white mb-4">Вход для администратора</h1>
 <div class="max-w-md mx-auto p-6 bg-gray-900 rounded-xl shadow-md mt-6">
-
-    <h1 class="text-2xl font-bold text-white mb-4">Вход для администратора</h1>
 
     <form action="{{ route('admin.login') }}" method="POST" class="space-y-4">
         @csrf
