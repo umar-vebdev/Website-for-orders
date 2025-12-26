@@ -8,6 +8,7 @@ use App\Models\OrderItem;
 use App\Models\Dish;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Events\OrderCreated;
 
 class CheckoutController extends Controller
 {
@@ -17,6 +18,16 @@ class CheckoutController extends Controller
         $cart = Cache::get("cart_$clientId", []);
         return view('front.orders.order_form', compact('cart'));
     }
+    function formatRussianPhone($phone) {
+        $digits = preg_replace('/\D+/', '', $phone);
+    
+        if (strlen($digits) === 11 && $digits[0] === '8') {
+            $digits = '7' . substr($digits, 1);
+        }
+    
+        return $digits;
+    }
+    
 
     public function store(Request $request)
     {
@@ -43,12 +54,14 @@ class CheckoutController extends Controller
         $order = Order::create([
             'client_id' => $clientId,
             'name' => $request->name,
-            'phone' => $request->phone,
+            'phone' => $this->formatRussianPhone($request->phone),
             'address' => $request->address,
             'total_price' => $total,
             'status' => 'new',
             'description' => $request->description,
         ]);
+
+        event(new OrderCreated($order));
 
         // Сохраняем позиции
         foreach($cart as $dishId => $item) {

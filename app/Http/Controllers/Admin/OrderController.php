@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Dish;
+use App\Models\AdminLog;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Services\AdminLogService;
+use App\Exports\OrderExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -29,9 +35,22 @@ class OrderController extends Controller
             'status' => 'required|in:new,processing,done,cancelled'
         ]);
 
+        $oldStatus = $order->getOriginal('status');
+
         $order->status = $request->status;
         $order->save();
 
+        AdminLogService::log(
+            'Изменил статус заказа',
+            "№{$order->id}: {$oldStatus} → {$order->status}"
+        );
+
         return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
     }
+
+    public function export(Order $order)
+    {
+        return Excel::download(new OrderExport($order), 'order_'.$order->id.'.xlsx');
+    }
+
 }

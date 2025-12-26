@@ -7,6 +7,14 @@
 
     <div class="mb-4 text-slate-400 text-sm">Дата: {{ $order->created_at->format('d.m.Y H:i') }}</div>
 
+    {{-- Кнопка для экспорта --}}
+    <div class="mb-4">
+        <a href="{{ route('admin.orders.export', $order->id) }}" 
+           class="inline-block px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded shadow-md transition">
+            Скачать Excel
+        </a>
+    </div>
+
     {{-- Позиции заказа --}}
     <h2 class="font-semibold text-white mb-2">Позиции заказа</h2>
     <div class="space-y-2">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\AdminLog;
 
 class AdminAuthController extends Controller
 {
@@ -21,8 +23,8 @@ class AdminAuthController extends Controller
         ]);
 
         if(Auth::attempt(array_merge($credentials, ['is_admin' => 1]))) {
-            return redirect()->intended(route('admin.dashboard'));
-        }else {
+            return redirect()->route('admin.dashboard');
+        } else {
             return back()->withErrors([
                 'email' => 'Неверные данные для входа или вы не админ.',
             ]);
@@ -37,6 +39,38 @@ class AdminAuthController extends Controller
         return redirect()->route('menu');
     }
 
+        // Форма регистрации нового админа
+        public function showForm()
+        {
+            return view('admin.register');
+        }
     
+        // Регистрация нового админа
+        public function register(Request $request)
+        {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:6',
+            ]);
+    
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'is_admin' => 1,
+            ]);
+            
+            Auth::login($user);
 
+            AdminLog::create([
+                'admin_id' => Auth::id(),
+                'admin_name' => Auth::user()->name,
+                'action' => 'Добавил админа',
+                'description' => "{$user->name} (email: {$user->email})",
+            ]);
+            
+            return redirect()->route('admin.dashboard')->with('success', 'Админ добавлен.');
+            
+        }
 }

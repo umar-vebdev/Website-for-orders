@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Dish;
+use App\Services\AdminLogService;
+use App\Models\AdminLog;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class DishController extends Controller
 {
@@ -36,11 +40,18 @@ class DishController extends Controller
             ? $request->file('photo_path')->store('dishes', 'public')
             : null;
 
-        Dish::create([
+        $dish = Dish::create([
             'name' => $request->name,
             'price' => $request->price,
             'weight' => $request->weight,
             'photo_path' => $path,
+        ]);
+
+        AdminLog::create([
+            'admin_id' => Auth::id(),
+            'admin_name' => Auth::user()->name,
+            'action' => 'Добавил блюдо',
+            'description' => "{$dish->name} (id: {$dish->id})",
         ]);
 
         return redirect()->route('admin.dishes')->with('success', 'Блюдо добавлено!');
@@ -81,6 +92,13 @@ class DishController extends Controller
             'photo_path' => $path,
         ]);
 
+        AdminLog::create([
+            'admin_id' => Auth::id(),
+            'admin_name' => Auth::user()->name,
+            'action' => 'Обновил блюдо',
+            'description' => "{$dish->name} (id: {$dish->id})",
+        ]);
+
         return redirect()->route('admin.dishes')->with('success', 'Блюдо обновлено!');
     }
 
@@ -92,6 +110,13 @@ class DishController extends Controller
             Storage::disk('public')->delete($dish->photo_path);
         }
         $dish->delete();
+
+        AdminLog::create([
+            'admin_id' => Auth::id(),
+            'admin_name' => Auth::user()->name,
+            'action' => 'Удалил блюдо',
+            'description' => "{$dish->name} (id: {$dish->id})",
+        ]);
 
         return redirect()->route('admin.dishes')->with('success', 'Блюдо удалено!');
     }

@@ -27,13 +27,13 @@ class CartController extends Controller
         $dish = Dish::findOrFail($id);
 
         if(isset($cart[$dish->id])) {
-            $cart[$dish->id]['quantity']++;
+            $cart[$dish->id]['quantity'] = $request->quantity;
         } else {
             $cart[$dish->id] = [
                 'name' => $dish->name,
                 'price' => $dish->price,
                 'weight' => $dish->weight,
-                'quantity' => 1,
+                'quantity' => $request->quantity,
                 'photo' => $dish->photo_path
             ];
         }
@@ -91,7 +91,6 @@ class CartController extends Controller
         foreach ($request->items as $item) {
             $qty = (int) $item['quantity'];
     
-            // ❗ защита
             if ($qty <= 0) {
                 continue;
             }
@@ -113,7 +112,7 @@ class CartController extends Controller
     
         Cache::put("cart_$clientId", $cart, 60 * 24);
     
-        return response()->noContent(); // без json и без сообщений
+        return response()->noContent();
     }
     
 }

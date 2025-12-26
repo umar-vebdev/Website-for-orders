@@ -32,10 +32,12 @@
         <div>
             <label class="block mb-1 text-gray-300">Телефон</label>
             <input
-                type="text"
+                type="number"
                 name="phone"
+                id="phone"
                 required
                 class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="+7"
             >
         </div>
 
@@ -72,4 +74,5 @@
     </form>
 
 </div>
+
 @endsection

@@ -1,46 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
+use App\Models\AdminLog;
 
 class AdminController extends Controller
 {
-    // Панель администратора
     public function dashboard()
-    {
-        $admins = User::where('is_admin', true)->get();
-        return view('admin.dashboard', compact('admins'));
-    }
+{
+    $admins = User::where('is_admin', true)->get();
+    $adminLogs = AdminLog::latest()->take(10)->get(['admin_name', 'action']); // последние 10 действий
+    return view('admin.dashboard', compact('admins', 'adminLogs'));
+}
 
-    // Форма регистрации нового админа
-    public function showForm()
-    {
-        return view('admin.register');
-    }
-
-    // Регистрация нового админа
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|confirmed|min:6',
-        ]);
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'is_admin' => true,
-        ]);
-
-        return redirect()->route('admin.dashboard')->with('success', 'Админ добавлен.');
-    }
-
-    // Удаление админа
     public function destroy(User $user)
     {
         if ($user->id === Auth::id()) {
@@ -48,6 +24,15 @@ class AdminController extends Controller
         }
 
         $user->delete();
+
+        AdminLog::create([
+            'admin_id' => Auth::id(),
+            'admin_name' => Auth::user()->name,
+            'action' => 'Удалил админа',
+            'description' => "{$user->name} (email: {$user->email})",
+        ]);
+
         return back()->with('success', 'Админ удалён.');
     }
+
 }
