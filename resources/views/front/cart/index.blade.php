@@ -24,13 +24,8 @@
                        bg-[#020617]/80 border border-slate-800
                        hover:bg-[#020617] transition w-full"
             >
-                {{-- Фото + информация --}}
+                {{-- информация --}}
                 <div class="flex items-center gap-2 min-w-0 flex-1">
-                    <img
-                        src="{{ asset('storage/' . $item['photo']) }}"
-                        alt="{{ $item['name'] }}"
-                        class="w-16 h-16 md:w-20 md:h-20 object-cover rounded-xl flex-shrink-0"
-                    >
                     <div class="flex flex-col justify-center min-w-0">
                         <h2 class="text-base md:text-lg font-medium truncate">
                             {{ $item['name'] }}

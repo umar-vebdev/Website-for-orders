@@ -69,3 +69,5 @@ closeSidebar.addEventListener('click', () => {
 
 </body>
 </html>
+
+@vite('resources/js/admin.js')

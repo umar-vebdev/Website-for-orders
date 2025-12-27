@@ -34,7 +34,6 @@ class CartController extends Controller
                 'price' => $dish->price,
                 'weight' => $dish->weight,
                 'quantity' => $request->quantity,
-                'photo' => $dish->photo_path
             ];
         }
 
@@ -105,7 +104,6 @@ class CartController extends Controller
                     'price' => $dish->price,
                     'weight' => $dish->weight,
                     'quantity' => $qty,
-                    'photo' => $dish->photo_path,
                 ];
             }
         }

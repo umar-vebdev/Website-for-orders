@@ -33,15 +33,6 @@
                    class="w-full p-2 rounded bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500" required>
         </div>
 
-        {{-- Фото --}}
-        <div>
-            <label class="block text-gray-300 mb-1">Фото</label>
-            <input type="file" name="photo_path" class="w-full text-gray-200">
-            @if(isset($dish) && $dish->photo_path)
-                <img src="{{ asset('storage/'.$dish->photo_path) }}" class="w-20 h-20 mt-2 rounded object-cover">
-            @endif
-        </div>
-
         {{-- Кнопка --}}
         <button type="submit" 
                 class="w-full py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded shadow hover:from-blue-500 hover:to-blue-700 transition">

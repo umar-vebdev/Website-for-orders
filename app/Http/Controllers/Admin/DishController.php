@@ -33,18 +33,13 @@ class DishController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'weight' => 'required|numeric',
-            'photo_path' => 'nullable|image',
         ]);
 
-        $path = $request->hasFile('photo_path')
-            ? $request->file('photo_path')->store('dishes', 'public')
-            : null;
 
         $dish = Dish::create([
             'name' => $request->name,
             'price' => $request->price,
             'weight' => $request->weight,
-            'photo_path' => $path,
         ]);
 
         AdminLog::create([
@@ -73,23 +68,12 @@ class DishController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'weight' => 'required|numeric',
-            'photo_path' => 'nullable|image',
         ]);
-
-        $path = $dish->photo_path;
-
-        if ($request->hasFile('photo_path')) {
-            if ($dish->photo_path) {
-                Storage::disk('public')->delete($dish->photo_path);
-            }
-            $path = $request->file('photo_path')->store('dishes', 'public');
-        }
 
         $dish->update([
             'name' => $request->name,
             'price' => $request->price,
             'weight' => $request->weight,
-            'photo_path' => $path,
         ]);
 
         AdminLog::create([
@@ -106,9 +90,7 @@ class DishController extends Controller
     public function destroy($id)
     {
         $dish = Dish::findOrFail($id);
-        if ($dish->photo_path) {
-            Storage::disk('public')->delete($dish->photo_path);
-        }
+        
         $dish->delete();
 
         AdminLog::create([

@@ -18,16 +18,7 @@ class CheckoutController extends Controller
         $cart = Cache::get("cart_$clientId", []);
         return view('front.orders.order_form', compact('cart'));
     }
-    function formatRussianPhone($phone) {
-        $digits = preg_replace('/\D+/', '', $phone);
-    
-        if (strlen($digits) === 11 && $digits[0] === '8') {
-            $digits = '7' . substr($digits, 1);
-        }
-    
-        return $digits;
-    }
-    
+
 
     public function store(Request $request)
     {
@@ -54,7 +45,7 @@ class CheckoutController extends Controller
         $order = Order::create([
             'client_id' => $clientId,
             'name' => $request->name,
-            'phone' => $this->formatRussianPhone($request->phone),
+            'phone' => $request->phone,
             'address' => $request->address,
             'total_price' => $total,
             'status' => 'new',

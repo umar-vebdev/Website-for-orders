@@ -16,9 +16,6 @@
         @foreach($order->items as $item)
             <div class="flex justify-between items-center p-3 bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition">
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <img src="{{ asset('storage/' . $item->dish->photo_path) }}" 
-                         alt="{{ $item->dish->name }}" 
-                         class="w-16 h-16 object-cover rounded-xl flex-shrink-0">
 
                     <div class="min-w-0">
                         <div class="text-white font-semibold truncate">{{ $item->dish->name }}</div>

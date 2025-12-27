@@ -25,14 +25,6 @@
                    w-full overflow-hidden"
         >
 
-            {{-- Фото --}}
-            <img
-                src="{{ asset('storage/' . $dish->photo_path) }}"
-                alt="{{ $dish->name }}"
-                class="w-16 h-16 sm:w-20 sm:h-20
-                       object-cover rounded-lg flex-shrink-0"
-            >
-
             {{-- Информация --}}
             <div class="flex-1 min-w-0">
                 <h2 class="text-sm sm:text-base font-medium text-white truncate">
