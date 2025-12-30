@@ -1,57 +1,59 @@
 @extends('layouts.front')
 
-@section('title', "Заказ №{$order->id}")
+@section('title', 'Мои заказы')
 
 @section('content')
 
-<div class="space-y-6">
+<h1 class="text-2xl md:text-3xl font-bold text-white mb-6">
+    Мои заказы
+</h1>
 
-    <h1 class="text-2xl md:text-3xl font-bold text-white">
-        Заказ №{{ $order->id }}
-    </h1>
-
-    {{-- Контейнер для WebSocket --}}
-    <div id="order-status-container"
-         data-order-id="{{ $order->id }}"
-         class="p-4 rounded-2xl bg-[#020617]/80 border border-slate-800">
-
-        <div class="text-slate-400 text-sm mb-2">
-            Статус заказа
-        </div>
-
-        <span id="status-label"
-              class="px-3 py-1 rounded-xl font-medium
-                 @if($order->status === 'new') bg-blue-600/30 text-blue-300
-                 @elseif($order->status === 'processing') bg-yellow-600/30 text-yellow-300
-                 @elseif($order->status === 'done') bg-green-600/30 text-green-300
-                 @elseif($order->status === 'cancelled') bg-red-600/30 text-red-300
-                 @else bg-blue-600/30 text-blue-300
-                 @endif">
-            {{ \App\Models\Order::getStatuses()[$order->status] ?? $order->status }}
-        </span>
+@if($orders->isEmpty())
+    <div class="text-slate-400">
+        У вас пока нет заказов.
     </div>
+@else
+    <div class="space-y-4">
+        @foreach($orders as $order)
+        <a href="{{ route('my.orders.show', $order->id) }}"
+           class="block p-4 rounded-2xl bg-[#020617]/80 border border-slate-800 hover:bg-slate-900/60"
+           id="order-status-container-{{ $order->id }}"
+           data-order-id="{{ $order->id }}">
 
-    {{-- Информация по заказу --}}
-    <div class="p-4 rounded-2xl bg-[#020617]/80 border border-slate-800 space-y-3">
-        <div class="text-slate-300">
-            Имя: <span class="text-white font-medium">{{ $order->name }}</span>
-        </div>
+            <div class="flex justify-between items-center">
+                <div class="text-white font-medium">
+                    Заказ №{{ $order->id }}
+                </div>
 
-        <div class="text-slate-300">
-            Телефон: <span class="text-white font-medium">{{ $order->phone }}</span>
-        </div>
+                <div class="text-slate-400 text-sm">
+                    {{ $order->created_at->format('d.m.Y H:i') }}
+                </div>
+            </div>
 
-        <div class="text-slate-300">
-            Сумма: <span class="text-white font-medium">{{ $order->total_price }} ₽</span>
-        </div>
+            <div class="mt-2 flex items-center gap-4">
+                {{-- Сумма --}}
+                <div class="text-slate-300">
+                    Сумма: <span class="text-white">{{ $order->total_price }} ₽</span>
+                </div>
 
-        <div class="text-slate-300">
-            Дата: <span class="text-white font-medium">{{ $order->created_at->format('d.m.Y H:i') }}</span>
-        </div>
+                {{-- Статус --}}
+                <span
+                    class="status-label px-3 py-1 rounded-xl text-sm font-medium
+                        @if($order->status === 'new') bg-blue-600/30 text-blue-300
+                        @elseif($order->status === 'processing') bg-yellow-600/30 text-yellow-300
+                        @elseif($order->status === 'done') bg-green-600/30 text-green-300
+                        @elseif($order->status === 'cancelled') bg-red-600/30 text-red-300
+                        @else bg-slate-600/30 text-slate-300
+                        @endif"
+                    id="status-label-{{ $order->id }}"
+                    data-order-id="{{ $order->id }}">
+                    {{ \App\Models\Order::getStatuses()[$order->status] ?? $order->status }}
+                </span>
+            </div>
+        </a>
+        @endforeach
     </div>
-
-</div>
-
+@endif
 @push('scripts')
     @vite(['resources/js/front.js'])
 @endpush

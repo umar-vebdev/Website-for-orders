@@ -13,6 +13,8 @@ class AdminController extends Controller
     public function dashboard()
 {
     $admins = User::where('is_admin', true)->get();
+
+    return view('admin.dashboard', compact('admins'));
 }
 
     public function destroy(User $user)

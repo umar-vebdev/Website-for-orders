@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flex items-center gap-2 mt-3">
                     <div class="flex items-center gap-1">
                         <div class="bg-gray-800 text-white text-xs rounded px-2 py-1 border border-slate-700">
-                            Статус можно будет изменить после перезагрузки страницы
+                            Статус можно будет изменить после обновления страницы
                         </div>
                     </div>
                     <a href="/admin/orders/${e.id}" class="bg-gray-700/50 hover:bg-gray-700 text-blue-400 hover:text-blue-300 text-xs rounded px-2 py-1 transition flex items-center justify-center">

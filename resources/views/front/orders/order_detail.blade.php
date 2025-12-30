@@ -52,7 +52,7 @@
         $statusColors = [
             'new' => 'bg-blue-600 text-white',
             'processing' => 'bg-yellow-500 text-black',
-            'completed' => 'bg-green-600 text-white',
+            'done' => 'bg-green-600 text-white',
             'cancelled' => 'bg-red-600 text-white',
         ];
     @endphp
