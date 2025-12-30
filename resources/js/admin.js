@@ -1,8 +1,15 @@
 import './bootstrap';
 
+// Позволяет видеть события Pusher в консоли
+window.Pusher.logToConsole = true;
+
 document.addEventListener('DOMContentLoaded', () => {
-    const ordersList = document.querySelector('#orders-list');
-    if (!ordersList) return;
+    const ordersList = document.getElementById('orders-list');
+
+    if (!ordersList) {
+        console.log('Скрипт заказов спит: #orders-list не найден.');
+        return;
+    }
 
     const statusLabels = {
         'new': 'Новый',
@@ -18,37 +25,58 @@ document.addEventListener('DOMContentLoaded', () => {
         'cancelled': 'bg-red-600 text-white',
     };
 
-    // Подписка на канал "orders"
+    console.log('Контейнер найден. Подписываемся на заказы...');
+
     window.Echo.channel('orders')
         .listen('.OrderCreated', (e) => {
-            console.log('Новый заказ:', e);
+            console.log('Событие получено!', e);
 
-            // Вставляем только базовую карточку (без формы)
+            // Удаляем сообщение "Заказов пока нет", если оно есть
+            const noOrdersMsg = document.getElementById('no-orders-message');
+            if (noOrdersMsg) noOrdersMsg.remove();
+
             const row = document.createElement('div');
-            row.classList.add(
-                'order-card', 'flex', 'flex-wrap', 'items-center', 'gap-2',
-                'p-3', 'bg-[#020617]/80', 'border', 'border-slate-800',
-                'rounded-2xl', 'hover:bg-[#020617]', 'transition', 'w-full', 'overflow-hidden'
-            );
+            // Точный набор классов из вашего Blade
+            row.className = 'order-card bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition p-3 w-full';
 
+            // Форматируем дату как в Blade (d.m.Y H:i)
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ru-RU') + ' ' + 
+                            now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+            // Подставляем данные в шаблон, идентичный вашему Blade
             row.innerHTML = `
-                <div class="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-gray-800/50 rounded-xl text-white font-bold text-lg">
-                    ${e.id}
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 flex items-center justify-center bg-gray-800/50 rounded-xl text-white font-bold text-lg flex-shrink-0">
+                        ${e.id}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-white font-semibold truncate text-sm sm:text-base">${e.name}</span>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[e.status] || 'bg-gray-500 text-white'}">
+                                ${statusLabels[e.status] || e.status}
+                            </span>
+                        </div>
+                        <div class="text-xs sm:text-sm text-slate-400 truncate">
+                            ${e.phone} • ${dateStr}
+                        </div>
+                        <div class="text-sm sm:text-lg font-semibold mt-1">${e.total_price} ₽</div>
+                    </div>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-white font-semibold truncate text-sm sm:text-base">${e.name}</span>
-                        <span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[e.status] || 'bg-gray-500 text-white'}">
-                            ${statusLabels[e.status] || e.status}
-                        </span>
+
+                <div class="flex items-center gap-2 mt-3">
+                    <div class="flex items-center gap-1">
+                        <div class="bg-gray-800 text-white text-xs rounded px-2 py-1 border border-slate-700">
+                            Статус можно будет изменить после перезагрузки страницы
+                        </div>
                     </div>
-                    <div class="text-xs sm:text-sm text-slate-400 truncate">
-                        ${e.phone} • ${new Date().toLocaleString()}
-                    </div>
-                    <div class="text-sm sm:text-lg font-semibold mt-1">${e.total_price} ₽</div>
+                    <a href="/admin/orders/${e.id}" class="bg-gray-700/50 hover:bg-gray-700 text-blue-400 hover:text-blue-300 text-xs rounded px-2 py-1 transition flex items-center justify-center">
+                        Просмотр
+                    </a>
                 </div>
             `;
 
+            // Добавляем в начало списка
             ordersList.prepend(row);
         });
 });

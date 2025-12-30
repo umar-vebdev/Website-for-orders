@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\AdminLogService;
 use App\Exports\OrderExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Events\OrderStatusUpdated;
 
 class OrderController extends Controller
 {
@@ -40,10 +41,7 @@ class OrderController extends Controller
         $order->status = $request->status;
         $order->save();
 
-        AdminLogService::log(
-            'Изменил статус заказа',
-            "№{$order->id}: {$oldStatus} → {$order->status}"
-        );
+        event(new OrderStatusUpdated($order));
 
         return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
     }

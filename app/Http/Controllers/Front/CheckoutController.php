@@ -52,7 +52,7 @@ class CheckoutController extends Controller
             'description' => $request->description,
         ]);
 
-        event(new OrderCreated($order));
+        event(new \App\Events\OrderCreated($order));
 
         // Сохраняем позиции
         foreach($cart as $dishId => $item) {

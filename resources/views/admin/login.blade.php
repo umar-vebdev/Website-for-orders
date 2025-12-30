@@ -10,15 +10,15 @@
         @csrf
 
         <div>
-            <label class="block mb-1 text-gray-300">Email</label>
-            <input type="email" name="email" 
+            <label for="email" class="block mb-1 text-gray-300">Email</label>
+            <input type="email" name="email" id="email" autocomplete="email"
                    class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
                    required>
         </div>
 
         <div>
-            <label class="block mb-1 text-gray-300">Пароль</label>
-            <input type="password" name="password" 
+            <label for="password" class="block mb-1 text-gray-300">Пароль</label>
+            <input type="password" name="password" id="password" autocomplete="current-password"
                    class="w-full p-2 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" 
                    required>
         </div>

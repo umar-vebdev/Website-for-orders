@@ -62,13 +62,6 @@ class AdminAuthController extends Controller
             ]);
             
             Auth::login($user);
-
-            AdminLog::create([
-                'admin_id' => Auth::id(),
-                'admin_name' => Auth::user()->name,
-                'action' => 'Добавил админа',
-                'description' => "{$user->name} (email: {$user->email})",
-            ]);
             
             return redirect()->route('admin.dashboard')->with('success', 'Админ добавлен.');
             

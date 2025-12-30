@@ -42,13 +42,6 @@ class DishController extends Controller
             'weight' => $request->weight,
         ]);
 
-        AdminLog::create([
-            'admin_id' => Auth::id(),
-            'admin_name' => Auth::user()->name,
-            'action' => 'Добавил блюдо',
-            'description' => "{$dish->name} (id: {$dish->id})",
-        ]);
-
         return redirect()->route('admin.dishes')->with('success', 'Блюдо добавлено!');
     }
 
@@ -76,12 +69,6 @@ class DishController extends Controller
             'weight' => $request->weight,
         ]);
 
-        AdminLog::create([
-            'admin_id' => Auth::id(),
-            'admin_name' => Auth::user()->name,
-            'action' => 'Обновил блюдо',
-            'description' => "{$dish->name} (id: {$dish->id})",
-        ]);
 
         return redirect()->route('admin.dishes')->with('success', 'Блюдо обновлено!');
     }
@@ -92,13 +79,6 @@ class DishController extends Controller
         $dish = Dish::findOrFail($id);
         
         $dish->delete();
-
-        AdminLog::create([
-            'admin_id' => Auth::id(),
-            'admin_name' => Auth::user()->name,
-            'action' => 'Удалил блюдо',
-            'description' => "{$dish->name} (id: {$dish->id})",
-        ]);
 
         return redirect()->route('admin.dishes')->with('success', 'Блюдо удалено!');
     }

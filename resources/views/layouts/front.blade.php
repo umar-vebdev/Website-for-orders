@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <title>@yield('title') – Delivery от печи</title>
 
 <!-- Tailwind CDN -->
@@ -16,20 +17,19 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
+
+@vite(['resources/js/app.js'])
 </head>
 
 <body class="bg-[#020617] text-slate-100 min-h-screen flex flex-col">
 
-<!-- Header -->
 <header class="sticky top-0 z-50 bg-[#020617] border-b border-slate-800">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-
         <a href="{{ route('menu') }}" class="text-xl font-semibold tracking-wide flex items-center gap-2">
             <i class="fas fa-pizza-slice"></i>
             Delivery от печи
         </a>
 
-        <!-- Десктопное меню -->
         <nav class="hidden md:flex items-center gap-4 text-sm md:text-base">
             <a href="{{ route('menu') }}" class="flex items-center gap-1 text-slate-300 hover:text-white transition"><i class="fas fa-utensils"></i> Меню</a>
             <a href="{{ route('cart.index') }}" class="flex items-center gap-1 text-slate-300 hover:text-white transition"><i class="fas fa-shopping-cart"></i> Корзина</a>
@@ -37,14 +37,12 @@
             <a href="{{ route('admin.login') }}" class="flex items-center gap-1 text-slate-300 hover:text-white transition font-semibold"><i class="fas fa-user-shield"></i> Вход для админа</a>
         </nav>
 
-        <!-- Бургер для мобилок -->
         <button id="burger-btn" class="md:hidden text-slate-300 text-2xl focus:outline-none relative z-50">
             <i class="fas fa-bars"></i>
         </button>
     </div>
 </header>
 
-<!-- Мобильное меню -->
 <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 bg-[#020617] shadow-lg transform -translate-x-full transition-transform duration-300 z-50">
     <div class="p-6 flex justify-between items-center border-b border-slate-800">
         <span class="text-xl font-semibold text-white">Меню</span>
@@ -66,12 +64,12 @@
     </div>
 </main>
 
-
 <footer class="border-t border-slate-800 text-slate-500 text-sm text-center py-4">
     © {{ date('Y') }} Delivery от печи. Все права защищены.
 </footer>
 
 @stack('scripts')
+
 <script>
 const burgerBtn = document.getElementById('burger-btn');
 const mobileMenu = document.getElementById('mobile-menu');
@@ -80,7 +78,6 @@ const closeBtn = document.getElementById('close-menu');
 burgerBtn.addEventListener('click', () => mobileMenu.classList.remove('-translate-x-full'));
 closeBtn.addEventListener('click', () => mobileMenu.classList.add('-translate-x-full'));
 
-// Закрытие по клику вне меню
 document.addEventListener('click', e => {
     if (!mobileMenu.contains(e.target) && !burgerBtn.contains(e.target)) {
         mobileMenu.classList.add('-translate-x-full');

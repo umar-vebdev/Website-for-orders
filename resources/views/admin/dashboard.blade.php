@@ -51,14 +51,5 @@
         </button>
     </form>
 
-{{-- Список логов --}}
-<ul class="space-y-2 max-h-96 overflow-y-auto">
-    @foreach($adminLogs as $log)
-        <li class="flex justify-between items-center bg-gray-800/50 rounded p-2">
-            <span><strong>{{ $log->admin_name }}</strong> — {{ $log->action }} {{ $log->description }}</span>
-        </li>
-    @endforeach
-</ul>
-
 </div>
 @endsection
