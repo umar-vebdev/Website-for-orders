@@ -18,7 +18,7 @@
   referrerpolicy="no-referrer"
 />
 
-@vite(['resources/js/app.js'])
+@vite(['resources/js/front.js'])
 </head>
 
 <body class="bg-[#020617] text-slate-100 min-h-screen flex flex-col">

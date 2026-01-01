@@ -37,14 +37,17 @@
                 </div>
 
                 {{-- Статус --}}
+                @php
+                    $statusClasses = match($order->status) {
+                        'new' => 'bg-blue-600/30 text-blue-300',
+                        'processing' => 'bg-yellow-600/30 text-yellow-300',
+                        'done' => 'bg-green-600/30 text-green-300',
+                        'cancelled' => 'bg-red-600/30 text-red-300',
+                        default => 'bg-slate-600/30 text-slate-300',
+                    };
+                @endphp
                 <span
-                    class="status-label px-3 py-1 rounded-xl text-sm font-medium
-                        @if($order->status === 'new') bg-blue-600/30 text-blue-300
-                        @elseif($order->status === 'processing') bg-yellow-600/30 text-yellow-300
-                        @elseif($order->status === 'done') bg-green-600/30 text-green-300
-                        @elseif($order->status === 'cancelled') bg-red-600/30 text-red-300
-                        @else bg-slate-600/30 text-slate-300
-                        @endif"
+                    class="status-label px-3 py-1 rounded-xl text-sm font-medium {{ $statusClasses }}"
                     id="status-label-{{ $order->id }}"
                     data-order-id="{{ $order->id }}">
                     {{ \App\Models\Order::getStatuses()[$order->status] ?? $order->status }}
@@ -54,6 +57,7 @@
         @endforeach
     </div>
 @endif
+
 @push('scripts')
     @vite(['resources/js/front.js'])
 @endpush

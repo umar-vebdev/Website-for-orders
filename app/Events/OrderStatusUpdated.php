@@ -13,15 +13,13 @@ class OrderStatusUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order;
-
     /**
      * Создаем экземпляр события.
      */
-    public function __construct(Order $order)
-    {
-        $this->order = $order;
-    }
+    public function __construct(public $order,
+                                public $oldStatus,
+                                public $newStatus)
+    {}
 
     /**
      * Канал, на который отправляем данные.

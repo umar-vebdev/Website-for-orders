@@ -31,20 +31,22 @@ class OrderController extends Controller
     }
 
     public function updateStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'status' => 'required|in:new,processing,done,cancelled'
-        ]);
+{
+    $request->validate([
+        'status' => 'required|in:new,processing,done,cancelled'
+    ]);
 
-        $oldStatus = $order->getOriginal('status');
+    $oldStatus = $order->getOriginal('status');
+    $newStatus = $request->status;            
 
-        $order->status = $request->status;
-        $order->save();
+    $order->status = $newStatus;
+    $order->save();
 
-        event(new \App\Events\OrderStatusUpdated($order));
+    event(new \App\Events\OrderStatusUpdated($order, $oldStatus, $newStatus));
 
-        return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
-    }
+    return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
+}
+
 
     public function export(Order $order)
     {
