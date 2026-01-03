@@ -8,7 +8,12 @@
     Дата: {{ $order->created_at->format('d.m.Y H:i') }}
 </div>
 
+<div class="text-white font-medium">
+    Заказ №{{ $order->id }}
+</div>
+
 <div class="container mx-auto p-4 max-w-md sm:max-w-lg md:max-w-2xl">
+    
 
     {{-- Позиции заказа --}}
     <h2 class="font-semibold text-white mb-2">Позиции заказа</h2>
@@ -66,6 +71,13 @@
             ← Назад к заказам
         </a>
     </div>
-
+  {{-- Кнопка удаления заказа --}}
+  <form action="{{ route('my.orders.clear', $order->id) }}" method="POST" class="mt-6">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="py-2 px-4 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl shadow-md transition">
+        Удалить заказ
+    </button>
+</form>
 </div>
 @endsection

@@ -8,6 +8,20 @@
     Мои заказы
 </h1>
 
+@if(!$orders->isEmpty())
+    <div class="flex justify-end mb-4">
+        <form action="{{ route('my.orders.clear') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit"
+                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition">
+                Удалить все заказы
+            </button>
+        </form>
+    </div>
+@endif
+
+
 @if($orders->isEmpty())
     <div class="text-slate-400">
         У вас пока нет заказов.

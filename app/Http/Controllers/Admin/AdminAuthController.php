@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\AdminLog;
+use Illuminate\Support\Facades\Session;
 
 class AdminAuthController extends Controller
 {
@@ -66,4 +67,12 @@ class AdminAuthController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'Админ добавлен.');
             
         }
+
+        public function showLogin()
+{
+    session(['init' => true]);
+
+    return view('admin.login');
+}
+
 }

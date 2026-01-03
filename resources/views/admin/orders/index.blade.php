@@ -3,9 +3,20 @@
 @section('title', 'Все заказы')
 
 @section('content')
-<div class="w-full py-4">
-    {{-- Оборачиваем всё в контейнер orders-list --}}
-    {{-- Даже если заказов нет, этот ID должен быть в DOM для работы JS --}}
+<div class="w-full py-4 flex flex-col gap-4">
+
+    {{-- Кнопка удаления всех заказов --}}
+    <form action="{{ route('admin.orders.destroyAll') }}" method="POST" class="flex justify-end mb-4">
+        @csrf
+        @method('DELETE')
+        <button type="submit" 
+            class="py-2 px-4 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl shadow-md transition">
+            Удалить все заказы
+        </button>
+    </form>
+    
+
+    {{-- Список заказов --}}
     <div id="orders-list" class="space-y-3">
         @forelse($orders as $order)
             @php
@@ -58,7 +69,6 @@
                 </div>
             </div>
         @empty
-            {{-- Этот блок можно оставить, но JS будет добавлять заказы ВЫШЕ него в orders-list --}}
             <p id="no-orders-message" class="text-gray-400">Заказов пока нет.</p>
         @endforelse
     </div>

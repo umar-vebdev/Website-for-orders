@@ -53,4 +53,17 @@ class OrderController extends Controller
         return Excel::download(new OrderExport($order), 'order_'.$order->id.'.xlsx');
     }
 
+    public function destroyAll()
+    {
+        Order::query()->delete();
+        return redirect()->route('admin.orders')->with('success', 'Все заказы удалены.');
+    }
+    
+    public function destroy(Order $order)
+    {
+        $order->delete();
+        return redirect()->route('admin.orders')->with('success', 'Заказ удалён.');
+    }
+    
+
 }

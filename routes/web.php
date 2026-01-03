@@ -30,14 +30,22 @@ use App\Http\Controllers\Admin\AdminController;
     // Мои заказы
     Route::get('/my-orders', [\App\Http\Controllers\Front\OrderHistoryController::class, 'index'])->name('my.orders');
     Route::get('/my-orders/{order}', [\App\Http\Controllers\Front\OrderHistoryController::class, 'show'])->name('my.orders.show');
+    Route::delete('/my/orders/clear', [\App\Http\Controllers\Front\OrderHistoryController::class, 'clear'])->name('my.orders.clear');
 
 
     Route::get('/menu', [\App\Http\Controllers\Front\MenuController::class, 'dishes'])->name('menu');
     Route::post('/menu/add/{id}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
 
     //логин
-Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+// форма логина админа
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])
+    ->name('admin.login.form');
+
+// обработка логина
+Route::post('/admin/login', [AdminAuthController::class, 'login'])
+    ->name('admin.login');
+
+
 
 //--Admin--
 Route::prefix('admin')->middleware([
@@ -55,7 +63,11 @@ Route::prefix('admin')->middleware([
     Route::get('orders', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders');
     Route::get('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::delete('orders/destroy-all', [\App\Http\Controllers\Admin\OrderController::class, 'destroyAll'])->name('admin.orders.destroyAll');
+    Route::delete('/admin/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy']) ->name('admin.orders.destroy');
 
+
+//----------
     Route::get('/admin/orders/{order}/export', [OrderController::class, 'export'])->name('admin.orders.export');
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');   

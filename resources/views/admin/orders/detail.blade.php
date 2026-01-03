@@ -60,6 +60,16 @@
         <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded transition">Обновить</button>
     </form>
 
+     {{-- Форма удаления заказа --}}
+     <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" 
+            class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded transition">
+            Удалить
+        </button>
+    </form>
+
     <a href="{{ route('admin.orders') }}" class="text-blue-400 hover:text-blue-300 text-sm">&laquo; Назад к списку заказов</a>
 
 </div>

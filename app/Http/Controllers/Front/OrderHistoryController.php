@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
 
 class OrderHistoryController extends Controller
 {
@@ -33,4 +35,16 @@ class OrderHistoryController extends Controller
 
         return view('front.orders.order_detail', compact('order'));
     }
+
+    public function clear(Request $request)
+{
+    $clientId = $request->cookie('client_id');
+
+    \App\Models\Order::where('client_id', $clientId)->each(function($order) {
+        $order->items()->delete();
+        $order->delete();
+    });
+
+    return redirect()->route('my.orders')->with('success', 'Все заказы удалены.');
+}
 }
