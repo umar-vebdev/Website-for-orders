@@ -8,23 +8,52 @@
     Дата: {{ $order->created_at->format('d.m.Y H:i') }}
 </div>
 
-<div class="text-white font-medium">
+<div class="text-white font-medium mb-4">
     Заказ №{{ $order->id }}
 </div>
 
 <div class="container mx-auto p-4 max-w-md sm:max-w-lg md:max-w-2xl">
-    
+
+    {{-- Кнопка копирования --}}
+    <button
+        type="button"
+        onclick="copyOrderItems()"
+        class="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition"
+    >
+        Копировать список
+    </button>
+
+    {{-- Статус заказа --}}
+    <h2 class="font-semibold text-white mb-2">Статус заказа</h2>
+    @php
+        $statusColors = [
+            'new' => 'bg-blue-600 text-white',
+            'processing' => 'bg-yellow-500 text-black',
+            'done' => 'bg-green-600 text-white',
+            'cancelled' => 'bg-red-600 text-white',
+        ];
+    @endphp
+    <span class="px-3 py-1 rounded-full text-sm font-medium {{ $statusColors[$order->status] ?? 'bg-gray-500 text-white' }}">
+        {{ \App\Models\Order::getStatuses()[$order->status] }}
+    </span>
 
     {{-- Позиции заказа --}}
     <h2 class="font-semibold text-white mb-2">Позиции заказа</h2>
     <div class="space-y-2">
         @foreach($order->items as $item)
-            <div class="flex justify-between items-center p-3 bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition">
+            <div
+                class="order-item flex justify-between items-center p-3 bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition"
+                data-name="{{ $item->dish->name }}"
+                data-qty="{{ $item->quantity }}"
+            >
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-
                     <div class="min-w-0">
-                        <div class="text-white font-semibold truncate">{{ $item->dish->name }}</div>
-                        <div class="text-slate-400 text-xs sm:text-sm">{{ $item->weight }} г × {{ $item->quantity }}</div>
+                        <div class="text-white font-semibold truncate">
+                            {{ $item->dish->name }}
+                        </div>
+                        <div class="text-slate-400 text-xs sm:text-sm">
+                            {{ $item->weight }} г × {{ $item->quantity }}
+                        </div>
                     </div>
                 </div>
 
@@ -51,33 +80,29 @@
         @endif
     </div>
 
-    {{-- Статус заказа (если хочешь, можно добавить, как у админа) --}}
-    <h2 class="font-semibold text-white mb-2">Статус заказа</h2>
-    @php
-        $statusColors = [
-            'new' => 'bg-blue-600 text-white',
-            'processing' => 'bg-yellow-500 text-black',
-            'done' => 'bg-green-600 text-white',
-            'cancelled' => 'bg-red-600 text-white',
-        ];
-    @endphp
-    <span class="px-3 py-1 rounded-full text-sm font-medium {{ $statusColors[$order->status] ?? 'bg-gray-500 text-white' }}">
-        {{ \App\Models\Order::getStatuses()[$order->status] }}
-    </span>
-
-    {{-- Ссылка назад --}}
+    {{-- Назад --}}
     <div class="mt-6">
         <a href="{{ route('my.orders') }}" class="text-blue-400 hover:text-blue-300 transition">
             ← Назад к заказам
         </a>
     </div>
-  {{-- Кнопка удаления заказа --}}
-  <form action="{{ route('my.orders.clear', $order->id) }}" method="POST" class="mt-6">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="py-2 px-4 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl shadow-md transition">
-        Удалить заказ
-    </button>
-</form>
 </div>
+
+{{-- JS для копирования --}}
+<script>
+function copyOrderItems() {
+    const items = document.querySelectorAll('.order-item');
+    let text = '';
+
+    items.forEach(item => {
+        const name = item.dataset.name;
+        const qty = item.dataset.qty;
+        text += `${name} × ${qty}\n`;
+    });
+
+    navigator.clipboard.writeText(text)
+        .then(() => alert('Список заказа скопирован'))
+        .catch(() => alert('Не удалось скопировать'));
+}
+</script>
 @endsection

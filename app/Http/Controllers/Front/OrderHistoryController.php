@@ -35,16 +35,4 @@ class OrderHistoryController extends Controller
 
         return view('front.orders.order_detail', compact('order'));
     }
-
-    public function clear(Request $request)
-{
-    $clientId = $request->cookie('client_id');
-
-    \App\Models\Order::where('client_id', $clientId)->each(function($order) {
-        $order->items()->delete();
-        $order->delete();
-    });
-
-    return redirect()->route('my.orders')->with('success', 'Все заказы удалены.');
-}
 }

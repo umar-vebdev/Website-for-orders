@@ -30,8 +30,6 @@ use App\Http\Controllers\Admin\AdminController;
     // Мои заказы
     Route::get('/my-orders', [\App\Http\Controllers\Front\OrderHistoryController::class, 'index'])->name('my.orders');
     Route::get('/my-orders/{order}', [\App\Http\Controllers\Front\OrderHistoryController::class, 'show'])->name('my.orders.show');
-    Route::delete('/my/orders/clear', [\App\Http\Controllers\Front\OrderHistoryController::class, 'clear'])->name('my.orders.clear');
-
 
     Route::get('/menu', [\App\Http\Controllers\Front\MenuController::class, 'dishes'])->name('menu');
     Route::post('/menu/add/{id}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
