@@ -32,14 +32,12 @@ class DishController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'weight' => 'required|numeric',
         ]);
 
 
         $dish = Dish::create([
             'name' => $request->name,
             'price' => $request->price,
-            'weight' => $request->weight,
         ]);
 
         return redirect()->route('admin.dishes')->with('success', 'Блюдо добавлено!');
@@ -60,13 +58,11 @@ class DishController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'weight' => 'required|numeric',
         ]);
 
         $dish->update([
             'name' => $request->name,
             'price' => $request->price,
-            'weight' => $request->weight,
         ]);
 
 

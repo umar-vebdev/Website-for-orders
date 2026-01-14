@@ -4,59 +4,80 @@
 
 @section('content')
 
-<h1 class="text-2xl md:text-3xl font-bold text-white mb-6">
-    Мои заказы
-</h1>
+<div class="mb-6 px-2">
+    <h1 class="font-display text-2xl font-black tracking-tighter uppercase italic text-white flex items-center gap-2">
+        <span class="w-1 h-6 bg-accent rounded-full"></span>
+        Мои <span class="text-accent text-outline">заказы</span>
+    </h1>
+</div>
 
-@if($orders->isEmpty())
-    <div class="text-slate-400">
-        У вас пока нет заказов.
-    </div>
-@else
-    <div class="space-y-4">
-        @foreach($orders as $order)
-        <a href="{{ route('my.orders.show', $order->id) }}"
-           class="block p-4 rounded-2xl bg-[#020617]/80 border border-slate-800 hover:bg-slate-900/60"
-           id="order-status-container-{{ $order->id }}"
-           data-order-id="{{ $order->id }}">
-
-            <div class="flex justify-between items-center">
-                <div class="text-white font-medium">
-                    Заказ №{{ $order->id }}
-                </div>
-
-                <div class="text-slate-400 text-sm">
-                    {{ $order->created_at->format('d.m.Y H:i') }}
-                </div>
-            </div>
-
-            <div class="mt-2 flex items-center gap-4">
-                {{-- Сумма --}}
-                <div class="text-slate-300">
-                    Сумма: <span class="text-white">{{ $order->total_price }} ₽</span>
-                </div>
-
-                {{-- Статус --}}
+<div class="max-w-md mx-auto relative px-2">
+    @if($orders->isEmpty())
+        <div class="py-20 text-center bg-white/[0.02] rounded-[32px] border border-white/5">
+            <i class="fas fa-receipt text-4xl text-white/10 mb-4"></i>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">У вас пока нет заказов</p>
+            <a href="{{ route('menu') }}" class="inline-block mt-4 text-accent font-bold text-sm border-b border-accent/30 hover:border-accent transition">Заказать что-нибудь</a>
+        </div>
+    @else
+        <div class="flex flex-col bg-white/[0.02] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+            @foreach($orders as $order)
                 @php
-                    $statusClasses = match($order->status) {
-                        'new' => 'bg-blue-600/30 text-blue-300',
-                        'processing' => 'bg-yellow-600/30 text-yellow-300',
-                        'done' => 'bg-green-600/30 text-green-300',
-                        'cancelled' => 'bg-red-600/30 text-red-300',
-                        default => 'bg-slate-600/30 text-slate-300',
+                    $statusConfig = match($order->status) {
+                        'new' => ['bg' => 'bg-blue-500/10', 'text' => 'text-blue-400', 'icon' => 'fa-bell'],
+                        'processing' => ['bg' => 'bg-orange-500/10', 'text' => 'text-orange-400', 'icon' => 'fa-fire'],
+                        'done' => ['bg' => 'bg-green-500/10', 'text' => 'text-green-400', 'icon' => 'fa-check-circle'],
+                        'cancelled' => ['bg' => 'bg-red-500/10', 'text' => 'text-red-400', 'icon' => 'fa-times-circle'],
+                        default => ['bg' => 'bg-slate-500/10', 'text' => 'text-slate-400', 'icon' => 'fa-info-circle'],
                     };
                 @endphp
-                <span
-                    class="status-label px-3 py-1 rounded-xl text-sm font-medium {{ $statusClasses }}"
-                    id="status-label-{{ $order->id }}"
-                    data-order-id="{{ $order->id }}">
-                    {{ \App\Models\Order::getStatuses()[$order->status] ?? $order->status }}
-                </span>
-            </div>
-        </a>
-        @endforeach
-    </div>
-@endif
+
+                <a href="{{ route('my.orders.show', $order->id) }}"
+                   class="group flex items-center gap-4 p-4 border-b border-white/5 last:border-0 hover:bg-white/[0.05] transition-all"
+                   id="order-status-container-{{ $order->id }}"
+                   data-order-id="{{ $order->id }}">
+                    
+                    {{-- Контейнер иконки с ID для смены фона --}}
+                    <div id="icon-bg-{{ $order->id }}" class="w-12 h-12 {{ $statusConfig['bg'] }} {{ $statusConfig['text'] }} rounded-full flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110">
+                        {{-- Сама иконка с ID для смены класса --}}
+                        <i id="icon-i-{{ $order->id }}" class="fas {{ $statusConfig['icon'] }} text-sm transition-all duration-500"></i>
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <h2 class="font-bold text-[15px] text-white uppercase tracking-tight">
+                                Заказ №{{ $order->id }}
+                            </h2>
+                            <span class="text-[11px] font-medium text-slate-500 italic">
+                                {{ $order->created_at->format('d.m H:i') }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-[13px] font-black text-white/90">
+                                {{ number_format($order->total_price, 0, ',', ' ') }} ₽
+                            </span>
+
+                            {{-- Текстовый статус --}}
+                            <span class="status-label text-[10px] font-black uppercase tracking-widest {{ $statusConfig['text'] }} transition-colors duration-500"
+                                  id="status-label-{{ $order->id }}">
+                                {{ \App\Models\Order::getStatuses()[$order->status] ?? $order->status }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <i class="fas fa-chevron-right text-[10px] text-white/10 group-hover:text-accent group-hover:translate-x-1 transition-all"></i>
+                </a>
+            @endforeach
+        </div>
+    @endif
+</div>
+
+<style>
+    .text-outline {
+        color: transparent;
+        -webkit-text-stroke: 1px #FF4D00;
+    }
+</style>
 
 @push('scripts')
     @vite(['resources/js/front.js'])

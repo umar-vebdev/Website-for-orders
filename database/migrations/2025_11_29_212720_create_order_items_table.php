@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('dish_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('price', 8, 2);
-            $table->integer('weight');
             $table->timestamps();
         });
     }

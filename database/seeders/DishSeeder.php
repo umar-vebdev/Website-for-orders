@@ -4,30 +4,59 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Dish;
+use Illuminate\Support\Facades\Schema;
 
 class DishSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        Dish::create([
-            'name' => 'Плов',
-            'price' => 250,
-            'weight' => 300,
-            'photo_path' => 'plov.jpg'
-        ]);
+        // 1. Отключаем проверку внешних ключей, чтобы truncate сработал
+        Schema::disableForeignKeyConstraints();
+        
+        // 2. Очищаем таблицу перед заполнением
+        Dish::truncate();
+        
+        // 3. Включаем проверку обратно
+        Schema::enableForeignKeyConstraints();
 
-        Dish::create([
-            'name' => 'Борщ',
-            'price' => 200,
-            'weight' => 400,
-            'photo_path' => 'borsh.jpg'
-        ]);
+        $dishes = [
+            ['name' => 'Самса говядина (тандырная)', 'price' => 65],
+            ['name' => 'Самса баранина (тандырная)', 'price' => 70],
+            ['name' => 'Самса говядина (слоенная)', 'price' => 60],
+            ['name' => 'Самса баранина (слоенная)', 'price' => 65],
+            ['name' => 'Самса куриная (слоенная)', 'price' => 55],
+            ['name' => 'Самса с тыквой (слоенная)', 'price' => 45],
+            ['name' => 'Сосиска в тесте жареная', 'price' => 45],
+            ['name' => 'Сосиска в тесте печёная', 'price' => 45],
+            ['name' => 'Беляш с мясом', 'price' => 55],
+            ['name' => 'Пирожок жареный с картошкой', 'price' => 35],
+            ['name' => 'Пирожок жареный с капустой', 'price' => 35],
+            ['name' => 'Чебурек с мясом', 'price' => 55],
+            ['name' => 'Чебурек с сыром', 'price' => 60],
+            ['name' => 'Мини пицца', 'price' => 60],
+            ['name' => 'Плетенка с сосиской и сыром', 'price' => 60],
+            ['name' => 'Косичка с сосиской и сыром', 'price' => 70],
+            ['name' => 'Кольцо с мясом', 'price' => 55],
+            ['name' => 'Хачапури слоенное тесто', 'price' => 60],
+            ['name' => 'Хачапури по-мегрельски', 'price' => 60],
+            ['name' => 'Курник', 'price' => 60],
+            ['name' => 'Пирожок с сосиской и картошкой', 'price' => 55],
+            ['name' => 'Рулет с курицей в сливочном соусе', 'price' => 60],
+            ['name' => 'Жульен с грибами и курицей', 'price' => 60],
+            ['name' => 'Сочник с творогом', 'price' => 45],
+            ['name' => 'Ватрушка с творогом', 'price' => 45],
+            ['name' => 'Кекс', 'price' => 45],
+            ['name' => 'Конвертик с творогом', 'price' => 45],
+            ['name' => 'Булочка с начинкой (абрикос, малина, вишня)', 'price' => 60],
+            ['name' => 'Шарлотка с яблоком (6-8 кусков)', 'price' => 300],
+            ['name' => 'Пирог с мясом (6-8 кусков)', 'price' => 400],
+            ['name' => 'Пирог с картошкой и сыром (6-8 кусков)', 'price' => 400],
+            ['name' => 'Нон - кульча', 'price' => 25],
+            ['name' => 'Пита для шаурмы', 'price' => 25],
+        ];
 
-        Dish::create([
-            'name' => 'Шашлык',
-            'price' => 350,
-            'weight' => 250,
-            'photo_path' => 'shashlik.jpg'
-        ]);
+        foreach ($dishes as $dish) {
+            Dish::create($dish);
+        }
     }
 }

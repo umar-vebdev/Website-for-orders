@@ -17,12 +17,22 @@ use App\Events\OrderStatusUpdated;
 
 class OrderController extends Controller
 {
-    public function index() 
-    {
-        $orders = Order::orderBy('id', 'desc')->get();
+    public function index(Request $request)
+{
+    // Создаем базовый запрос к модели Order
+    $query = \App\Models\Order::query();
 
-        return view('admin.orders.index', compact('orders'));
+    // Если в ссылке передан статус (например, ?status=new), фильтруем
+    if ($request->has('status') && $request->status != '') {
+        $query->where('status', $request->status);
     }
+
+    // Получаем заказы, сортируя их: сначала новые/последние
+    // Используем paginate, если заказов будет много (например, по 20 на страницу)
+    $orders = $query->orderBy('created_at', 'desc')->get();
+
+    return view('admin.orders.index', compact('orders'));
+}
 
     public function show(Order $order)
     {

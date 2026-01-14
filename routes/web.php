@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
 //--Client-- 
-    Route::get('/', [\App\Http\Controllers\Front\MenuController::class, 'dishes']);
+    Route::get('/', [\App\Http\Controllers\Front\MenuController::class, 'dishes'])->name('menu');
     // Корзина
     Route::prefix('cart')->group(function () {
         Route::get('/', [\App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
@@ -30,6 +30,8 @@ use App\Http\Controllers\Admin\AdminController;
     // Мои заказы
     Route::get('/my-orders', [\App\Http\Controllers\Front\OrderHistoryController::class, 'index'])->name('my.orders');
     Route::get('/my-orders/{order}', [\App\Http\Controllers\Front\OrderHistoryController::class, 'show'])->name('my.orders.show');
+    Route::post('/order/{order}/reorder', [App\Http\Controllers\Front\CartController::class, 'reorder'])->name('order.reorder');
+
 
     Route::get('/menu', [\App\Http\Controllers\Front\MenuController::class, 'dishes'])->name('menu');
     Route::post('/menu/add/{id}', [\App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');

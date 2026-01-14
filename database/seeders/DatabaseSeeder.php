@@ -18,9 +18,5 @@ class DatabaseSeeder extends Seeder
         $this->call([
             \Database\Seeders\DishSeeder::class,
         ]);
-
-        $this->call([
-            \Database\Seeders\OrderSeeder::class,
-        ]);
     }
 }

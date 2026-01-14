@@ -9,7 +9,7 @@ use App\Models\Dish;
 class MenuController extends Controller
 {
     public function dishes() {
-        $dishes = Dish::all();
+        $dishes = Dish::paginate(10);
         return view('front.menu.index', compact('dishes'));
     }
 }

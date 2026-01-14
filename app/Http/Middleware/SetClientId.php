@@ -4,22 +4,29 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
 
 class SetClientId
 {
     public function handle(Request $request, Closure $next)
-{
-    $response = $next($request);
+    {
+        $clientId = $request->cookie('client_id');
+        $isNew = false;
 
-if (! $request->cookie('client_id')) {
-    $response->withCookie(
-        cookie('client_id', (string) Str::uuid(), 60 * 24 * 365)
-    );
-}
+        if (!$clientId) {
+            $clientId = (string) Str::uuid();
+            $request->cookies->set('client_id', $clientId);
+            $isNew = true;
+        }
 
-return $response;
-}
+        $response = $next($request);
 
+        if ($isNew && method_exists($response, 'withCookie')) {
+            $response->withCookie(
+                cookie('client_id', $clientId, 60 * 24 * 365)
+            );
+        }
+
+        return $response;
+    }
 }

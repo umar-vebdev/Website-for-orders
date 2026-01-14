@@ -1,72 +1,86 @@
 @extends('layouts.admin')
 
-@section('title', 'Блюда')
+@section('title', 'Управление блюдами')
 
 @section('content')
 
-{{-- Кнопка добавления --}}
-<div class="flex justify-end mb-4">
+{{-- Заголовок и кнопка добавления --}}
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+    <div>
+        <h1 class="font-display text-2xl font-black tracking-tighter uppercase italic text-white">
+            Меню <span class="text-accent text-outline">блюд</span>
+        </h1>
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em] mt-1">Всего позиций: {{ $dishes->count() }}</p>
+    </div>
+
     <a href="{{ route('admin.dishes.create') }}"
-       class="px-4 py-2
-              bg-gradient-to-r from-blue-600 to-blue-800
-              hover:from-blue-500 hover:to-blue-700
-              text-white rounded-xl shadow transition">
-        Добавить блюдо
+       class="group relative px-6 py-3 bg-accent rounded-2xl shadow-[0_10px_25px_rgba(255,77,0,0.3)] overflow-hidden transition-all active:scale-95">
+        <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+        <span class="relative font-display font-black text-white text-xs uppercase tracking-widest flex items-center gap-2">
+            Добавить блюдо <i class="fas fa-plus text-[10px]"></i>
+        </span>
     </a>
 </div>
 
-<div class="flex flex-col gap-2 w-full overflow-x-hidden">
+{{-- Список блюд --}}
+<div class="grid grid-cols-1 gap-3">
 
     @foreach($dishes as $dish)
-        <div
-            class="flex items-center gap-2 p-2 rounded-xl
-                   bg-[#020617]/90 border border-slate-800
-                   hover:bg-[#020617] transition
-                   w-full overflow-hidden"
-        >
+        <div class="group flex items-center gap-4 p-4 glass-panel rounded-[24px] hover:border-accent/30 transition-all">
 
-            {{-- Информация --}}
+            {{-- Основная информация --}}
             <div class="flex-1 min-w-0">
-                <h2 class="text-sm sm:text-base font-medium text-white truncate">
-                    {{ $dish->name }}
-                </h2>
-                <div class="text-xs sm:text-sm text-slate-400">
-                    {{ $dish->weight }} г
+                <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+                    <h2 class="font-bold text-sm sm:text-base text-white uppercase italic tracking-tight truncate">
+                        {{ $dish->name }}
+                    </h2>
                 </div>
-                <div class="mt-0.5 text-sm sm:text-base font-semibold text-white">
+                
+                <div class="mt-2 text-base sm:text-lg font-display font-black text-accent italic">
                     {{ number_format($dish->price, 0, ',', ' ') }} ₽
                 </div>
             </div>
 
-            {{-- Действия (как в меню — компактно) --}}
-            <div class="flex flex-col gap-1 flex-shrink-0">
-
+            {{-- Действия --}}
+            <div class="flex items-center gap-2">
+                {{-- Редактировать --}}
                 <a href="{{ route('admin.dishes.edit', $dish->id) }}"
-                   class="px-3 py-1 text-xs sm:text-sm
-                          bg-gradient-to-r from-blue-600 to-blue-800
-                          hover:from-blue-500 hover:to-blue-700
-                          text-white rounded-lg text-center transition">
-                    Редактировать
+                   class="w-10 h-10 flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white transition-all shadow-lg active:scale-90"
+                   title="Редактировать">
+                    <i class="fas fa-edit text-xs"></i>
                 </a>
 
-                <form action="{{ route('admin.dishes.destroy', $dish->id) }}" method="POST">
+                {{-- Удалить --}}
+                <form action="{{ route('admin.dishes.destroy', $dish->id) }}" method="POST" 
+                      onsubmit="return confirm('Вы уверены, что хотите удалить это блюдо?')">
                     @csrf
                     @method('DELETE')
-                    <button
-                        type="submit"
-                        class="px-3 py-1 text-xs sm:text-sm
-                               bg-gradient-to-r from-red-600 to-red-800
-                               hover:from-red-500 hover:to-red-700
-                               text-white rounded-lg w-full transition">
-                        Удалить
+                    <button type="submit"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-90"
+                            title="Удалить">
+                        <i class="fas fa-trash-alt text-xs"></i>
                     </button>
                 </form>
-
             </div>
 
         </div>
     @endforeach
 
 </div>
+
+{{-- Сообщение, если блюд нет --}}
+@if($dishes->isEmpty())
+    <div class="py-20 text-center glass-panel rounded-[32px]">
+        <i class="fas fa-utensils text-4xl text-white/5 mb-4"></i>
+        <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Список блюд пока пуст</p>
+    </div>
+@endif
+
+<style>
+    .text-outline {
+        color: transparent;
+        -webkit-text-stroke: 1px #FF4D00;
+    }
+</style>
 
 @endsection

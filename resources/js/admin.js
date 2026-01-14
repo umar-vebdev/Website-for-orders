@@ -1,16 +1,13 @@
 import './bootstrap';
 
-// Позволяет видеть события Pusher в консоли
 window.Pusher.logToConsole = true;
 
 document.addEventListener('DOMContentLoaded', () => {
     const ordersList = document.getElementById('orders-list');
 
-    if (!ordersList) {
-        console.log('Скрипт заказов спит: #orders-list не найден.');
-        return;
-    }
+    if (!ordersList) return;
 
+    // Справочник названий статусов (соответствует Order::getStatuses())
     const statusLabels = {
         'new': 'Новый',
         'processing': 'В обработке',
@@ -18,65 +15,76 @@ document.addEventListener('DOMContentLoaded', () => {
         'cancelled': 'Отменён',
     };
 
-    const statusColors = {
-        'new': 'bg-blue-600 text-white',
-        'processing': 'bg-yellow-500 text-black',
-        'done': 'bg-green-600 text-white',
-        'cancelled': 'bg-red-600 text-white',
+    // Справочник стилей (соответствует вашему Blade @php блоку)
+    const statusStyles = {
+        'new': 'bg-blue-600',
+        'processing': 'bg-yellow-500 !text-black',
+        'done': 'bg-green-600',
+        'cancelled': 'bg-slate-700',
     };
-
-    console.log('Контейнер найден. Подписываемся на заказы...');
 
     window.Echo.channel('orders')
         .listen('.OrderCreated', (e) => {
-            console.log('Событие получено!', e);
+            console.log('Новый заказ получен!', e);
 
-            // Удаляем сообщение "Заказов пока нет", если оно есть
-            const noOrdersMsg = document.getElementById('no-orders-message');
+            // Удаляем сообщение "Заказов нет"
+            const noOrdersMsg = ordersList.querySelector('p.text-center');
             if (noOrdersMsg) noOrdersMsg.remove();
 
             const row = document.createElement('div');
-            // Точный набор классов из вашего Blade
-            row.className = 'order-card bg-[#020617]/80 border border-slate-800 rounded-2xl hover:bg-[#020617] transition p-3 w-full';
+            // Применяем классы из Blade: glass-panel + остальные
+            row.className = 'glass-panel rounded-2xl p-3 border-white/5 hover:border-white/10 transition-all opacity-0';
+            row.style.transform = 'translateY(-10px)';
+            row.style.transition = 'all 0.4s ease-out';
 
-            // Форматируем дату как в Blade (d.m.Y H:i)
             const now = new Date();
             const dateStr = now.toLocaleDateString('ru-RU') + ' ' + 
                             now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
-            // Подставляем данные в шаблон, идентичный вашему Blade
-            row.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-14 h-14 flex items-center justify-center bg-gray-800/50 rounded-xl text-white font-bold text-lg flex-shrink-0">
-                        ${e.id}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2">
-                            <span class="text-white font-semibold truncate text-sm sm:text-base">${e.name}</span>
-                            <span class="px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[e.status] || 'bg-gray-500 text-white'}">
-                                ${statusLabels[e.status] || e.status}
-                            </span>
-                        </div>
-                        <div class="text-xs sm:text-sm text-slate-400 truncate">
-                            ${e.phone} • ${dateStr}
-                        </div>
-                        <div class="text-sm sm:text-lg font-semibold mt-1">${e.total_price} ₽</div>
-                    </div>
-                </div>
+            // Форматируем цену
+            const formattedPrice = new Intl.NumberFormat('ru-RU').format(e.total_price);
 
-                <div class="flex items-center gap-2 mt-3">
-                    <div class="flex items-center gap-1">
-                        <div class="bg-gray-800 text-white text-xs rounded px-2 py-1 border border-slate-700">
-                            Статус можно будет изменить после обновления страницы
+            // Генерируем HTML, идентичный структуре в Blade
+            row.innerHTML = `
+                <div class="flex flex-col gap-3">
+                    
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-display font-black text-accent text-sm italic">#${e.id}</span>
+                            <h3 class="text-sm font-bold text-white uppercase truncate max-w-[140px]">${e.name}</h3>
+                        </div>
+                        <div class="px-2 py-0.5 rounded-md ${statusStyles[e.status] || 'bg-slate-500'} text-[8px] font-black uppercase tracking-wider shadow-sm">
+                            ${statusLabels[e.status] || e.status}
                         </div>
                     </div>
-                    <a href="/admin/orders/${e.id}" class="bg-gray-700/50 hover:bg-gray-700 text-blue-400 hover:text-blue-300 text-xs rounded px-2 py-1 transition flex items-center justify-center">
-                        Просмотр
-                    </a>
+
+                    <div class="flex items-center justify-between border-t border-white/5 pt-3">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-slate-400 font-mono">${e.phone}</span>
+                            <span class="text-[8px] text-slate-600 font-bold uppercase">${dateStr}</span>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="text-right">
+                                <span class="text-[11px] font-display font-black text-white italic">${formattedPrice} ₽</span>
+                            </div>
+                            <a href="/admin/orders/${e.id}" 
+                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-400 hover:text-white transition-colors">
+                                <i class="fas fa-chevron-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
             `;
 
             // Добавляем в начало списка
             ordersList.prepend(row);
+            
+            // Анимация появления
+            requestAnimationFrame(() => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            });
         });
 });
