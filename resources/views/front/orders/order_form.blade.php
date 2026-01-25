@@ -16,6 +16,17 @@
 </div>
 
 <div class="max-w-md mx-auto relative px-2 pb-10">
+    
+    @if ($errors->any())
+    <div style="background: rgba(255,0,0,0.2); border: 1px solid red; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <strong>Ошибка заполнения:</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
     <div class="bg-white/[0.02] border border-white/5 rounded-[32px] p-6 shadow-2xl">
         <form action="{{ route('checkout.store') }}" method="POST" class="space-y-5">
@@ -59,7 +70,7 @@
                     <input
                         type="text"
                         name="address"
-                        required
+                        nullable
                         class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm"
                     >
                 </div>
@@ -109,7 +120,6 @@
 
 @push('scripts')
 <script>
-// Ваша логика маски телефона остается без изменений, она отличная
 const phoneInput = document.getElementById('phone');
 
 phoneInput.addEventListener('input', function () {

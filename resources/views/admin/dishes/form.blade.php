@@ -13,7 +13,7 @@
 
 <div class="max-w-xl mx-auto relative px-2 pb-10">
 
-    <div class="glass-panel rounded-[32px] p-8 shadow-2xl relative overflow-hidden">
+    <div class="glass-panel rounded-[32px] p-8 shadow-2xl relative overflow-hidden bg-white/[0.02] border border-white/5">
         {{-- Декор --}}
         <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/5 rounded-full blur-3xl"></div>
 
@@ -31,12 +31,32 @@
                     <i class="fas fa-quote-left absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
                     <input type="text" name="name" value="{{ old('name', $dish->name ?? '') }}" 
                            class="w-full pl-11 pr-4 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm font-bold" 
-                           placeholder="Например: Пицца Маргарита" required>
+                           placeholder="Например: Самса с говядиной" required>
                 </div>
                 @error('name') <p class="text-red-500 text-[10px] uppercase font-bold ml-2">{{ $message }}</p> @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+           {{-- Категория --}}
+<div class="space-y-2">
+    <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-2">Категория блюда</label>
+    <div class="relative">
+        <i class="fas fa-folder absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
+        <select name="category" 
+                class="w-full pl-11 pr-10 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all text-sm font-bold appearance-none cursor-pointer" 
+                required>
+            <option value="" disabled {{ !isset($dish) ? 'selected' : '' }}>Выберите категорию</option>
+            @foreach(\App\Models\Dish::$categories as $cat)
+                <option value="{{ $cat }}" {{ (old('category', $dish->category ?? '') == $cat) ? 'selected' : '' }}>
+                    {{ $cat }}
+                </option>
+            @endforeach
+        </select>
+        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
+            <i class="fas fa-chevron-down text-[10px]"></i>
+        </div>
+    </div>
+    @error('category') <p class="text-red-500 text-[10px] uppercase font-bold ml-2">{{ $message }}</p> @enderror
+</div>
                 {{-- Цена --}}
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-2">Цена (₽)</label>
@@ -44,11 +64,13 @@
                         <i class="fas fa-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
                         <input type="number" name="price" value="{{ old('price', $dish->price ?? '') }}" 
                                class="w-full pl-11 pr-4 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all text-sm font-mono font-bold" 
-                               placeholder="550" required>
+                               placeholder="150" required>
                     </div>
+                    @error('price') <p class="text-red-500 text-[10px] uppercase font-bold ml-2">{{ $message }}</p> @enderror
                 </div>
+            </div>
 
-            {{-- Кнопка --}}
+            {{-- Кнопки управления --}}
             <div class="pt-4 flex flex-col sm:flex-row gap-4">
                 <button type="submit" 
                         class="flex-1 group relative py-4 bg-accent rounded-2xl shadow-[0_15px_35px_rgba(255,77,0,0.3)] overflow-hidden transition-all active:scale-95">
@@ -73,6 +95,25 @@
         color: transparent;
         -webkit-text-stroke: 1px #FF4D00;
     }
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+    }
 </style>
+
+@push('scripts')
+<script>
+function setCategory(name) {
+    const input = document.getElementById('category-input');
+    input.value = name;
+    
+    input.focus();
+    input.classList.add('border-accent/50');
+    setTimeout(() => {
+        input.classList.remove('border-accent/50');
+    }, 600);
+}
+</script>
+@endpush
 
 @endsection
