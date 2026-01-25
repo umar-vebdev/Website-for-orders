@@ -13,10 +13,10 @@ class Dish extends Model
         'Выпечка с мясом', 
         'Сытная выпечка', 
         'Сладкая выпечка', 
-        'Большие пироги', 
+        'Пироги', 
         'Хлеб'
     ];
-    
+
     public function items() {
         return $this->hasMany(OrderItem::class);
     }
