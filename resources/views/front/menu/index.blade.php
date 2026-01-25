@@ -18,7 +18,7 @@
 <div class="mb-6 px-2 overflow-x-auto scrollbar-hide">
     <div class="grid grid-rows-2 grid-flow-col gap-2 w-max">
         @php
-            $categories = ['Самса', 'Выпечка с мясом', 'Сытная выпечка', 'Сладкая выпечка', 'Большие пироги', 'Хлеб'];
+            $categories = ['Самса', 'Выпечка с мясом', 'Сытная выпечка', 'Сладкая выпечка', 'Пироги', 'Хлеб'];
             $currentCategory = request('category');
         @endphp
 
