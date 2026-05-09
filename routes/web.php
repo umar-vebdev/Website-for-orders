@@ -73,11 +73,11 @@ Route::prefix('admin')->middleware([
     Route::get('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('orders/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
     Route::delete('orders/destroy-all', [\App\Http\Controllers\Admin\OrderController::class, 'destroyAll'])->name('admin.orders.destroyAll');
-    Route::delete('/admin/orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
+    Route::delete('orders/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'destroy'])->name('admin.orders.destroy');
 
 
     //----------
-    Route::get('/admin/orders/{order}/export', [OrderController::class, 'export'])->name('admin.orders.export');
+    Route::get('orders/{order}/export', [OrderController::class, 'export'])->name('admin.orders.export');
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 

@@ -12,27 +12,46 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function dashboard(): \Illuminate\View\View
+    public function dashboard(Request $request): \Illuminate\View\View
     {
-        $today = now()->startOfDay();
-        $weekAgo = now()->subDays(7)->startOfDay();
+        $period = $request->string('period')->toString();
+        $period = in_array($period, ['today', '7d', '30d', 'all'], true) ? $period : '7d';
 
-        // Метрики заказов
-        $ordersToday = Order::whereDate('created_at', $today)->count();
-        $ordersWeek = Order::where('created_at', '>=', $weekAgo)->count();
+        $periodStart = match ($period) {
+            'today' => now()->startOfDay(),
+            '30d' => now()->subDays(30)->startOfDay(),
+            'all' => null,
+            default => now()->subDays(7)->startOfDay(),
+        };
 
-        // Выручка (только выполненные заказы)
-        $revenueToday = Order::whereDate('created_at', $today)
-            ->where('status', 'done')
-            ->sum('total_price');
-        $revenueWeek = Order::where('created_at', '>=', $weekAgo)
-            ->where('status', 'done')
-            ->sum('total_price');
+        $periodLabel = match ($period) {
+            'today' => 'сегодня',
+            '30d' => 'за 30 дней',
+            'all' => 'за всё время',
+            default => 'за 7 дней',
+        };
 
-        // Новые заказы
+        $show = $request->input('show', ['total_orders', 'period_orders', 'period_revenue', 'new_orders']);
+        $show = is_array($show) ? $show : [];
+
+        $visiblePanels = [
+            'total_orders' => in_array('total_orders', $show, true),
+            'period_orders' => in_array('period_orders', $show, true),
+            'period_revenue' => in_array('period_revenue', $show, true),
+            'new_orders' => in_array('new_orders', $show, true),
+        ];
+
+        $ordersTotal = Order::count();
+        $ordersInPeriod = $periodStart
+            ? Order::where('created_at', '>=', $periodStart)->count()
+            : $ordersTotal;
+
+        $revenueInPeriod = $periodStart
+            ? Order::where('created_at', '>=', $periodStart)->where('status', 'done')->sum('total_price')
+            : Order::where('status', 'done')->sum('total_price');
+
         $newOrdersCount = Order::where('status', 'new')->count();
 
-        // Топ-5 блюд
         $topDishes = OrderItem::select('dish_id', DB::raw('SUM(quantity) as total_quantity'))
             ->with('dish')
             ->groupBy('dish_id')
@@ -44,12 +63,14 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'admins',
-            'ordersToday',
-            'ordersWeek',
-            'revenueToday',
-            'revenueWeek',
+            'ordersTotal',
+            'ordersInPeriod',
+            'revenueInPeriod',
             'newOrdersCount',
-            'topDishes'
+            'topDishes',
+            'period',
+            'periodLabel',
+            'visiblePanels'
         ));
     }
 

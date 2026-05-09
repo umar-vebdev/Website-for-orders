@@ -25,13 +25,13 @@
 
         {{-- Фильтрация по статусам (Скролл-меню) --}}
         <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            <a href="{{ route('admin.orders') }}"
+            <a href="{{ route('admin.orders.index') }}"
                 class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all
            {{ !request('status') ? 'bg-accent text-white shadow-[0_5px_15px_rgba(255,77,0,0.3)]' : 'bg-white/5 text-slate-400 border border-white/5' }}">
                 Все
             </a>
             @foreach (\App\Models\Order::getStatuses() as $key => $name)
-                <a href="{{ route('admin.orders', array_merge(request()->except('page'), ['status' => $key])) }}"
+                <a href="{{ route('admin.orders.index', array_merge(request()->except('page'), ['status' => $key])) }}"
                     class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all
                {{ request('status') === $key ? 'bg-white text-black shadow-lg' : 'bg-white/5 text-slate-400 border border-white/5' }}">
                     {{ $name }}
@@ -40,7 +40,7 @@
         </div>
 
         {{-- Форма поиска и фильтров по датам --}}
-        <form method="GET" action="{{ route('admin.orders') }}" class="flex flex-col md:flex-row gap-2">
+        <form method="GET" action="{{ route('admin.orders.index') }}" class="flex flex-col md:flex-row gap-2">
             @if (request('status'))
                 <input type="hidden" name="status" value="{{ request('status') }}">
             @endif
@@ -62,7 +62,7 @@
             </button>
 
             @if (request()->hasAny(['search', 'date_from', 'date_to']))
-                <a href="{{ route('admin.orders', request()->only('status')) }}"
+                <a href="{{ route('admin.orders.index', request()->only('status')) }}"
                     class="px-4 py-2 rounded-xl bg-white/5 text-slate-400 text-sm font-bold hover:bg-white/10 transition-colors text-center">
                     Сброс
                 </a>

@@ -5,15 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Dish;
-use App\Models\AdminLog;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Services\AdminLogService;
 use App\Exports\OrderExport;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Events\OrderStatusUpdated;
 
 class OrderController extends Controller
 {
@@ -73,7 +66,7 @@ class OrderController extends Controller
 
         event(new \App\Events\OrderStatusUpdated($order, $oldStatus, $newStatus));
 
-        return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
+        return redirect()->route('admin.orders.index')->with('success', 'Статус заказа обновлен!');
     }
 
 
@@ -85,12 +78,12 @@ class OrderController extends Controller
     public function destroyAll()
     {
         Order::query()->delete();
-        return redirect()->route('admin.orders')->with('success', 'Все заказы удалены.');
+        return redirect()->route('admin.orders.index')->with('success', 'Все заказы удалены.');
     }
 
     public function destroy(Order $order)
     {
         $order->delete();
-        return redirect()->route('admin.orders')->with('success', 'Заказ удалён.');
+        return redirect()->route('admin.orders.index')->with('success', 'Заказ удалён.');
     }
 }

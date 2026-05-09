@@ -7,7 +7,7 @@
     
     {{-- Верхняя панель управления --}}
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <a href="{{ route('admin.orders') }}" class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">
+        <a href="{{ route('admin.orders.index') }}" class="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">
             <i class="fas fa-arrow-left mr-1"></i> Назад к списку
         </a>
         

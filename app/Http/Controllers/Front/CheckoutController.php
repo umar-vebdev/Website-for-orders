@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CheckoutController extends Controller
 {
@@ -76,14 +77,25 @@ class CheckoutController extends Controller
                 return $order;
             });
 
-            event(new \App\Events\OrderCreated($order));
-
             $cartKey = 'cart_' . md5($clientId);
             Cache::forget($cartKey);
 
+            try {
+                event(new \App\Events\OrderCreated($order));
+            } catch (Throwable $eventException) {
+                Log::warning('Order created, but broadcasting failed.', [
+                    'order_id' => $order->id,
+                    'message' => $eventException->getMessage(),
+                ]);
+            }
+
             return redirect()->route('order.thank-you', $order);
-        } catch (\Exception $e) {
-            Log::error("Order creation failed: " . $e->getMessage());
+        } catch (Throwable $e) {
+            Log::error('Order creation failed.', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return redirect()->back()->with('error', 'Ошибка при сохранении заказа.');
         }
     }

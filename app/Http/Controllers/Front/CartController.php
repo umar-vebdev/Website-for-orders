@@ -21,19 +21,24 @@ class CartController extends Controller
 
     public function add(Request $request, $id)
     {
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1', 'max:999'],
+        ]);
+
         $clientId = $request->cookie('client_id');
         $cartKey = 'cart_' . md5($clientId ?? 'guest');
         $cart = Cache::get($cartKey, []);
 
         $dish = Dish::findOrFail($id);
+        $quantity = (int) $validated['quantity'];
 
         if(isset($cart[$dish->id])) {
-            $cart[$dish->id]['quantity'] = $request->quantity;
+            $cart[$dish->id]['quantity'] = $quantity;
         } else {
             $cart[$dish->id] = [
                 'name' => $dish->name,
                 'price' => $dish->price,
-                'quantity' => $request->quantity,
+                'quantity' => $quantity,
             ];
         }
 
@@ -53,18 +58,23 @@ class CartController extends Controller
 
 public function update(Request $request, $id)
 {
+    $validated = $request->validate([
+        'quantity' => ['nullable', 'integer', 'min:0', 'max:999'],
+        'quantity_manual' => ['nullable', 'integer', 'min:0', 'max:999'],
+    ]);
+
     $clientId = $request->cookie('client_id');
     $cartKey = 'cart_' . md5($clientId ?? 'guest');
     $cart = Cache::get($cartKey, []);
 
     if (isset($cart[$id])) {
 
-        $newQuantity = $request->has('quantity_manual')
-            ? (int)$request->quantity_manual
-            : (int)$request->quantity;
+        $manual = $validated['quantity_manual'] ?? null;
+        $regular = $validated['quantity'] ?? null;
+        $newQuantity = $manual ?? $regular ?? 0;
 
         if ($newQuantity > 0) {
-            $cart[$id]['quantity'] = min($newQuantity, 999);
+            $cart[$id]['quantity'] = $newQuantity;
         } else {
             unset($cart[$id]);
         }
@@ -105,6 +115,12 @@ public function update(Request $request, $id)
 
     public function addMultiple(Request $request)
     {
+        $request->validate([
+            'items' => ['required', 'array'],
+            'items.*.dish_id' => ['required', 'integer', 'exists:dishes,id'],
+            'items.*.quantity' => ['required', 'integer', 'min:1', 'max:999'],
+        ]);
+
         $clientId = $request->cookie('client_id');
         $cartKey = 'cart_' . md5($clientId ?? 'guest');
         $cart = Cache::get($cartKey, []);
@@ -183,6 +199,10 @@ public function update(Request $request, $id)
      */
     public function addAjax(Request $request, int $id): \Illuminate\Http\JsonResponse
     {
+        $request->validate([
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:999'],
+        ]);
+
         $clientId = $request->cookie('client_id');
         $cartKey = 'cart_' . md5($clientId ?? 'guest');
         $cart = Cache::get($cartKey, []);

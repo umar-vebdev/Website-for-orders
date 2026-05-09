@@ -29,7 +29,7 @@
 @endif
 
     <div class="bg-white/[0.02] border border-white/5 rounded-[32px] p-6 shadow-2xl">
-        <form action="{{ route('checkout.store') }}" method="POST" class="space-y-5">
+        <form action="{{ route('checkout.store') }}" method="POST" class="space-y-5" id="checkout-form">
             @csrf
 
             {{-- Имя --}}
@@ -41,9 +41,13 @@
                         type="text"
                         name="name"
                         required
-                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm"
+                        value="{{ old('name') }}"
+                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border {{ $errors->has('name') ? 'border-red-500/70' : 'border-white/5' }} focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm"
                     >
                 </div>
+                @error('name')
+                    <p class="text-red-400 text-[11px] ml-2">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Телефон --}}
@@ -57,9 +61,13 @@
                         id="phone"
                         required
                         placeholder="+7 (___) ___-__-__"
-                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm font-mono"
+                        value="{{ old('phone') }}"
+                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border {{ $errors->has('phone') ? 'border-red-500/70' : 'border-white/5' }} focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm font-mono"
                     >
                 </div>
+                @error('phone')
+                    <p class="text-red-400 text-[11px] ml-2">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Адрес --}}
@@ -70,10 +78,13 @@
                     <input
                         type="text"
                         name="address"
-                        nullable
-                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm"
+                        value="{{ old('address') }}"
+                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-night/50 text-white border {{ $errors->has('address') ? 'border-red-500/70' : 'border-white/5' }} focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm"
                     >
                 </div>
+                @error('address')
+                    <p class="text-red-400 text-[11px] ml-2">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Комментарий --}}
@@ -82,14 +93,18 @@
                 <textarea
                     name="description"
                     rows="3"
-                    class="w-full px-4 py-3.5 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm resize-none"
-                ></textarea>
+                    class="w-full px-4 py-3.5 rounded-2xl bg-night/50 text-white border {{ $errors->has('description') ? 'border-red-500/70' : 'border-white/5' }} focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm resize-none"
+                >{{ old('description') }}</textarea>
+                @error('description')
+                    <p class="text-red-400 text-[11px] ml-2">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- Кнопка --}}
             <div class="pt-4">
                 <button
                     type="submit"
+                    id="checkout-submit"
                     class="group relative w-full py-4 bg-accent rounded-2xl shadow-[0_15px_35px_rgba(255,77,0,0.4)] overflow-hidden transition-transform active:scale-95"
                 >
                     <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
@@ -121,6 +136,8 @@
 @push('scripts')
 <script>
 const phoneInput = document.getElementById('phone');
+const checkoutForm = document.getElementById('checkout-form');
+const checkoutSubmit = document.getElementById('checkout-submit');
 
 phoneInput.addEventListener('input', function () {
     let digits = this.value.replace(/\D/g, '');
@@ -151,6 +168,12 @@ phoneInput.addEventListener('input', function () {
     }
 
     this.value = digits.length > 0 ? formatted : '';
+});
+
+checkoutForm.addEventListener('submit', function () {
+    checkoutSubmit.disabled = true;
+    checkoutSubmit.classList.add('opacity-70', 'cursor-not-allowed');
+    checkoutSubmit.querySelector('span').innerHTML = 'Оформляем...';
 });
 </script>
 @endpush

@@ -44,11 +44,15 @@
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF4D00; }
+        :focus-visible {
+            outline: 2px solid #FF4D00;
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-night text-gray-100 font-sans">
 
-    <button id="burgerBtn" class="fixed top-4 right-4 z-[60] w-12 h-12 flex items-center justify-center bg-accent text-white rounded-2xl md:hidden shadow-lg shadow-accent/20">
+    <button id="burgerBtn" aria-label="ŒÚÍ˚Ú¸ ÏÂÌ˛" class="fixed top-4 right-4 z-[60] w-12 h-12 flex items-center justify-center bg-accent text-white rounded-2xl md:hidden shadow-lg shadow-accent/20">
         <i class="fas fa-bars"></i>
     </button>
 
@@ -66,7 +70,7 @@
             
             <x-admin-nav-link href="{{ route('admin.dashboard') }}" icon="fa-chart-pie" label="–ü–∞–Ω–µ–ª—å" />
             <x-admin-nav-link href="{{ route('admin.dishes') }}" icon="fa-utensils" label="–ë–ª—é–¥–∞" />
-            <x-admin-nav-link href="{{ route('admin.orders') }}" icon="fa-receipt" label="–ó–∞–∫–∞–∑—ã" />
+            <x-admin-nav-link href="{{ route('admin.orders.index') }}" icon="fa-receipt" label="–ó–∞–∫–∞–∑—ã" />
             
             <div class="pt-6 border-t border-white/5 mt-6">
                 <div class="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-4 ml-4">–ë–µ–∑–æ–ø–∞—Å–Ω–æ—Å—Ç—å</div>
@@ -88,12 +92,12 @@
         
         <header class="h-20 border-b border-white/5 flex items-center justify-between px-8 sticky top-0 bg-night/80 backdrop-blur-md z-40">
             <div>
-                <h2 class="font-display text-sm font-black uppercase italic tracking-widest text-white/50">
+                <h2 class="font-display text-sm font-black uppercase italic tracking-widest text-white/70">
                     @yield('title', 'Dashboard')
                 </h2>
             </div>
             <div class="flex items-center gap-4">
-                <a href="{{ route('menu') }}" target="_blank" class="text-xs font-bold text-slate-500 hover:text-accent transition flex items-center gap-2 uppercase tracking-tighter">
+                <a href="{{ route('menu') }}" target="_blank" aria-label="ŒÚÍ˚Ú¸ Ò‡ÈÚ ‚ ÌÓ‚ÓÈ ‚ÍÎ‡‰ÍÂ" class="text-xs font-bold text-slate-500 hover:text-accent transition flex items-center gap-2 uppercase tracking-tighter">
                     <i class="fas fa-external-link-alt text-[10px]"></i> –ù–∞ —Å–∞–π—Ç
                 </a>
                 <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-[10px] font-black text-white">
@@ -135,3 +139,6 @@
     @vite('resources/js/admin.js')
 </body>
 </html>
+
+
+

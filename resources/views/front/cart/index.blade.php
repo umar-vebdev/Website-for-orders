@@ -50,7 +50,7 @@
                             {{-- –ú–∏–Ω—É—Å (—Ç–µ–ø–µ—Ä—å type="button" + JS –¥–ª—è –Ω–∞–¥–µ–∂–Ω–æ—Å—Ç–∏) --}}
                             <button type="button" 
                                 onclick="updateQty('{{ $id }}', {{ $item['quantity'] - 1 }})"
-                                class="w-8 h-8 flex items-center justify-center text-slate-400 active:scale-90 transition-transform">
+                                aria-label="”ÏÂÌ¸¯ËÚ¸ ÍÓÎË˜ÂÒÚ‚Ó" class="w-10 h-10 flex items-center justify-center text-slate-300 active:scale-90 transition-transform disabled:opacity-30">
                                 <i class="fas fa-minus text-[9px]"></i>
                             </button>
                             
@@ -61,13 +61,13 @@
                                 value="{{ $item['quantity'] }}" 
                                 onchange="this.form.submit()"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                                class="w-8 text-center bg-transparent text-white font-bold text-[13px] focus:outline-none appearance-none"
+                                class="w-9 text-center bg-transparent text-white font-bold text-[13px] focus:outline-none appearance-none"
                             >
                             
                             {{-- –ü–ª—é—Å (—Ç–µ–ø–µ—Ä—å type="button" + JS –¥–ª—è –Ω–∞–¥–µ–∂–Ω–æ—Å—Ç–∏) --}}
                             <button type="button" 
                                 onclick="updateQty('{{ $id }}', {{ $item['quantity'] + 1 }})"
-                                class="w-8 h-8 flex items-center justify-center text-accent active:scale-90 transition-transform">
+                                aria-label="”‚ÂÎË˜ËÚ¸ ÍÓÎË˜ÂÒÚ‚Ó" class="w-10 h-10 flex items-center justify-center text-accent active:scale-90 transition-transform">
                                 <i class="fas fa-plus text-[9px]"></i>
                             </button>
 
@@ -80,7 +80,7 @@
                     <form action="{{ route('cart.remove', $id) }}" method="POST" class="shrink-0">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="w-8 h-8 flex items-center justify-center text-slate-700 hover:text-red-500 transition-colors">
+                        <button type="submit" aria-label="”‰‡ÎËÚ¸ ÚÓ‚‡ ËÁ ÍÓÁËÌ˚" class="w-10 h-10 flex items-center justify-center text-slate-500 hover:text-red-500 transition-colors">
                             <i class="fa-solid fa-trash-can text-[11px]"></i>
                         </button>
                     </form>
@@ -108,7 +108,7 @@
 
         <form action="{{ route('cart.clear') }}" method="POST" class="w-full text-center">
             @csrf
-            <button type="submit" class="text-slate-600 hover:text-red-500 text-[10px] font-black uppercase tracking-[0.2em] transition-colors py-2">
+            <button type="submit" onclick="return confirm('Œ˜ËÒÚËÚ¸ ÍÓÁËÌÛ ˆÂÎËÍÓÏ?')" class="text-slate-500 hover:text-red-500 text-[10px] font-black uppercase tracking-[0.2em] transition-colors py-2">
                 <i class="fas fa-times mr-1"></i> –û—á–∏—Å—Ç–∏—Ç—å –∫–æ—Ä–∑–∏–Ω—É
             </button>
         </form>
@@ -124,9 +124,11 @@
         const input = document.getElementById('input-' + id);
         const hidden = document.getElementById('hidden-' + id);
         const form = document.getElementById('form-' + id);
+        if (form.dataset.submitting === '1') return;
         
         input.value = newVal;
         hidden.value = newVal;
+        form.dataset.submitting = '1';
         form.submit(); // –û—Ç–ø—Ä–∞–≤–ª—è–µ–º —Ñ–æ—Ä–º—É
     }
 </script>
@@ -147,3 +149,5 @@
 </style>
 
 @endsection
+
+
