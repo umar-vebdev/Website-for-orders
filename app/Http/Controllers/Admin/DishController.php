@@ -33,13 +33,19 @@ class DishController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'category' => 'required|string',
+            'weight' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer',
         ]);
-
 
         $dish = Dish::create([
             'name' => $request->name,
             'price' => $request->price,
             'category' => $request->category,
+            'weight' => $request->weight,
+            'description' => $request->description,
+            'sort_order' => $request->sort_order ?? 0,
+            'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->route('admin.dishes')->with('success', 'Блюдо добавлено!');
@@ -61,12 +67,19 @@ class DishController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'category' => 'required|string',
+            'weight' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer',
         ]);
 
         $dish->update([
             'name' => $request->name,
             'price' => $request->price,
             'category' => $request->category,
+            'weight' => $request->weight,
+            'description' => $request->description,
+            'sort_order' => $request->sort_order ?? 0,
+            'is_active' => $request->has('is_active'),
         ]);
 
 

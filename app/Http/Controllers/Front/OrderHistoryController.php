@@ -15,7 +15,7 @@ class OrderHistoryController extends Controller
     {
         $clientId = $request->cookie('client_id');
 
-        $orders = Order::where('client_id', $clientId)
+        $orders = Order::where('client_id', md5($clientId))
                         ->orderBy('id', 'desc')
                         ->get();
         
@@ -27,7 +27,7 @@ class OrderHistoryController extends Controller
     {
         $clientId = $request->cookie('client_id');
 
-        if($order->client_id !== $clientId) {
+        if($order->client_id !== md5($clientId)) {
             abort(403);
         }
 

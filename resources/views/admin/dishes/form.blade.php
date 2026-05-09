@@ -38,14 +38,17 @@
 
            {{-- Категория --}}
 <div class="space-y-2">
+    @php
+        $dishCategories = ['Самса', 'Выпечка с мясом', 'Сытная выпечка', 'Сладкая выпечка', 'Пироги', 'Хлеб'];
+    @endphp
     <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-2">Категория блюда</label>
     <div class="relative">
         <i class="fas fa-folder absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
-        <select name="category" 
-                class="w-full pl-11 pr-10 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all text-sm font-bold appearance-none cursor-pointer" 
+        <select name="category"
+                class="w-full pl-11 pr-10 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all text-sm font-bold appearance-none cursor-pointer"
                 required>
             <option value="" disabled {{ !isset($dish) ? 'selected' : '' }}>Выберите категорию</option>
-            @foreach(\App\Models\Dish::$categories as $cat)
+            @foreach($dishCategories as $cat)
                 <option value="{{ $cat }}" {{ (old('category', $dish->category ?? '') == $cat) ? 'selected' : '' }}>
                     {{ $cat }}
                 </option>
@@ -67,6 +70,45 @@
                                placeholder="150" required>
                     </div>
                     @error('price') <p class="text-red-500 text-[10px] uppercase font-bold ml-2">{{ $message }}</p> @enderror
+                </div>
+
+                {{-- Вес --}}
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-2">Вес (г)</label>
+                    <div class="relative">
+                        <i class="fas fa-balance-scale absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
+                        <input type="number" name="weight" value="{{ old('weight', $dish->weight ?? '') }}" 
+                               class="w-full pl-11 pr-4 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all text-sm font-mono font-bold" 
+                               placeholder="250">
+                    </div>
+                </div>
+
+                {{-- Описание --}}
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-2">Описание</label>
+                    <textarea name="description" rows="3"
+                           class="w-full px-4 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all placeholder:text-slate-700 text-sm font-bold resize-none" 
+                           placeholder="Свежая выпечка...">{{ old('description', $dish->description ?? '') }}</textarea>
+                </div>
+
+                {{-- Порядок сортировки --}}
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-2">Порядок сортировки</label>
+                    <div class="relative">
+                        <i class="fas fa-sort-numeric-down absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
+                        <input type="number" name="sort_order" value="{{ old('sort_order', $dish->sort_order ?? 0) }}" 
+                               class="w-full pl-11 pr-4 py-4 rounded-2xl bg-night/50 text-white border border-white/5 focus:border-accent/50 focus:outline-none transition-all text-sm font-mono font-bold">
+                    </div>
+                </div>
+
+                {{-- Активно --}}
+                <div class="flex items-center gap-3 ml-2 pt-2">
+                    <input type="checkbox" name="is_active" id="is_active" value="1"
+                           {{ old('is_active', $dish->is_active ?? true) ? 'checked' : '' }}
+                           class="w-5 h-5 rounded border-white/10 bg-night/50 text-accent focus:ring-accent focus:ring-offset-night cursor-pointer">
+                    <label for="is_active" class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 cursor-pointer">
+                        Отображать в меню
+                    </label>
                 </div>
             </div>
 

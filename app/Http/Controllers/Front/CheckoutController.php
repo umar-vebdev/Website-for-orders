@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -14,8 +15,14 @@ class CheckoutController extends Controller
 {
     public function showForm(Request $request)
     {
-        $clientId = $request->cookie('client_id');
-        $cart = Cache::get("cart_$clientId", []);
+        $clientId = $request->cookie('client_id') ?? $request->cookies->get('client_id');
+
+        if (!$clientId) {
+             Log::error('Checkout failed: client_id is missing.');
+             return redirect()->back()->with('error', 'Ошибка идентификации сессии. Пожалуйста, обновите страницу.');
+        }
+        $cartKey = 'cart_' . md5($clientId);
+        $cart = Cache::get($cartKey, []);
 
         if (empty($cart)) {
             return redirect()->route('menu')->with('error', 'Ваша корзина пуста');
@@ -24,23 +31,17 @@ class CheckoutController extends Controller
         return view('front.orders.order_form', compact('cart'));
     }
 
-    public function store(Request $request)
+    public function store(OrderRequest $request): \Illuminate\Http\RedirectResponse
     {
-        // Валидация
-        $request->validate([
-            'name'    => 'required|string|max:255',
-            'phone'   => 'required|string|max:255',
-            'address' => 'nullable|string|max:500',
-            'description' => 'nullable|string',
-        ]);
-
-        $clientId = $request->cookie('client_id');
+        $clientId = $request->cookie('client_id') ?? $request->cookies->get('client_id');
 
         if (!$clientId) {
+            Log::error('Checkout store failed: client_id is missing.');
             return redirect()->back()->with('error', 'Ошибка сессии. Обновите страницу.');
         }
 
-        $cart = Cache::get("cart_$clientId", []);
+        $cartKey = 'cart_' . md5($clientId);
+        $cart = Cache::get($cartKey, []);
 
         if (empty($cart)) {
             return redirect()->route('menu')->with('error', 'Корзина пуста');
@@ -54,7 +55,7 @@ class CheckoutController extends Controller
                 }
 
                 $order = Order::create([
-                    'client_id'   => $clientId,
+                    'client_id'   => md5($clientId),
                     'name'        => $request->name,
                     'phone'       => $request->phone,
                     'address'     => $request->address,
@@ -77,13 +78,30 @@ class CheckoutController extends Controller
 
             event(new \App\Events\OrderCreated($order));
 
-            Cache::forget("cart_$clientId");
+            $cartKey = 'cart_' . md5($clientId);
+            Cache::forget($cartKey);
 
-            return redirect()->route('menu')->with('success', 'Заказ успешно оформлен!');
-
+            return redirect()->route('order.thank-you', $order);
         } catch (\Exception $e) {
             Log::error("Order creation failed: " . $e->getMessage());
             return redirect()->back()->with('error', 'Ошибка при сохранении заказа.');
         }
+    }
+
+    /**
+     * Страница "Спасибо за заказ"
+     */
+    public function thankYou(Request $request, Order $order): \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+    {
+        $clientId = $request->cookie('client_id') ?? $request->cookies->get('client_id');
+
+        // Защита: только владелец заказа может видеть страницу
+        if ($order->client_id !== md5($clientId)) {
+            abort(403);
+        }
+
+        $order->load('items.dish');
+
+        return view('front.orders.thank-you', compact('order'));
     }
 }

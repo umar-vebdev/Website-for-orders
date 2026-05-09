@@ -17,22 +17,41 @@ use App\Events\OrderStatusUpdated;
 
 class OrderController extends Controller
 {
-    public function index(Request $request)
-{
-    // Создаем базовый запрос к модели Order
-    $query = \App\Models\Order::query();
+    public function index(Request $request): \Illuminate\View\View
+    {
+        $query = Order::query();
 
-    // Если в ссылке передан статус (например, ?status=new), фильтруем
-    if ($request->has('status') && $request->status != '') {
-        $query->where('status', $request->status);
+        // Фильтр по статусу
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Поиск по имени, телефону или ID
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+                if (is_numeric($search)) {
+                    $q->orWhere('id', $search);
+                }
+            });
+        }
+
+        // Фильтр по дате от
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        // Фильтр по дате до
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->paginate(20)->appends($request->all());
+
+        return view('admin.orders.index', compact('orders'));
     }
-
-    // Получаем заказы, сортируя их: сначала новые/последние
-    // Используем paginate, если заказов будет много (например, по 20 на страницу)
-    $orders = $query->orderBy('created_at', 'desc')->get();
-
-    return view('admin.orders.index', compact('orders'));
-}
 
     public function show(Order $order)
     {
@@ -41,26 +60,26 @@ class OrderController extends Controller
     }
 
     public function updateStatus(Request $request, Order $order)
-{
-    $request->validate([
-        'status' => 'required|in:new,processing,done,cancelled'
-    ]);
+    {
+        $request->validate([
+            'status' => 'required|in:new,processing,done,cancelled'
+        ]);
 
-    $oldStatus = $order->getOriginal('status');
-    $newStatus = $request->status;            
+        $oldStatus = $order->getOriginal('status');
+        $newStatus = $request->status;
 
-    $order->status = $newStatus;
-    $order->save();
+        $order->status = $newStatus;
+        $order->save();
 
-    event(new \App\Events\OrderStatusUpdated($order, $oldStatus, $newStatus));
+        event(new \App\Events\OrderStatusUpdated($order, $oldStatus, $newStatus));
 
-    return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
-}
+        return redirect()->route('admin.orders')->with('success', 'Статус заказа обновлен!');
+    }
 
 
     public function export(Order $order)
     {
-        return Excel::download(new OrderExport($order), 'order_'.$order->id.'.xlsx');
+        return Excel::download(new OrderExport($order), 'order_' . $order->id . '.xlsx');
     }
 
     public function destroyAll()
@@ -68,12 +87,10 @@ class OrderController extends Controller
         Order::query()->delete();
         return redirect()->route('admin.orders')->with('success', 'Все заказы удалены.');
     }
-    
+
     public function destroy(Order $order)
     {
         $order->delete();
         return redirect()->route('admin.orders')->with('success', 'Заказ удалён.');
     }
-    
-
 }

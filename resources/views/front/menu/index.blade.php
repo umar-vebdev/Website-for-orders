@@ -4,177 +4,291 @@
 
 @section('content')
 
-{{-- Заголовок --}}
-<div class="mb-4 px-2 flex items-center justify-between">
-    <div class="flex items-center gap-2">
-        <div class="w-0.5 h-4 bg-accent rounded-full"></div>
-        <h1 class="font-display text-sm sm:text-base font-black tracking-widest uppercase italic text-white leading-none">
-            Меню
-        </h1>
+    {{-- Заголовок --}}
+    <div class="mb-4 px-2 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <div class="w-0.5 h-4 bg-accent rounded-full"></div>
+            <h1
+                class="font-display text-sm sm:text-base font-black tracking-widest uppercase italic text-white leading-none">
+                Меню
+            </h1>
+        </div>
     </div>
-</div>
 
-{{-- Фильтр категорий (2 горизонтальных ряда) --}}
-<div class="mb-6 px-2 overflow-x-auto scrollbar-hide">
-    <div class="grid grid-rows-2 grid-flow-col gap-2 w-max">
-        @php
-            $categories = ['Самса', 'Выпечка с мясом', 'Сытная выпечка', 'Сладкая выпечка', 'Пироги', 'Хлеб'];
-            $currentCategory = request('category');
-        @endphp
+    {{-- Фильтр категорий --}}
+    <div class="mb-6 px-2 overflow-x-auto scrollbar-hide">
+        <div class="grid grid-rows-2 grid-flow-col gap-2 w-max">
+            @php
+                $categories = ['Самса', 'Выпечка с мясом', 'Сытная выпечка', 'Сладкая выпечка', 'Пироги', 'Хлеб'];
+                $currentCategory = request('category');
+            @endphp
 
-        <a href="{{ route('menu') }}" 
-           class="px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center transition-all border whitespace-nowrap
+            <a href="{{ route('menu') }}"
+                class="px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center transition-all border whitespace-nowrap
            {{ !$currentCategory ? 'bg-accent border-accent text-white shadow-lg' : 'bg-white/5 border-white/5 text-slate-400' }}">
-           Все
-        </a>
-
-        @foreach($categories as $cat)
-            <a href="{{ route('menu', ['category' => $cat]) }}" 
-               class="px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center transition-all border whitespace-nowrap
-               {{ $currentCategory === $cat ? 'bg-white border-white text-black shadow-lg' : 'bg-white/5 border-white/5 text-slate-400' }}">
-               {{ $cat }}
+                Все
             </a>
-        @endforeach
+
+            @foreach ($categories as $cat)
+                <a href="{{ route('menu', ['category' => $cat]) }}"
+                    class="px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center transition-all border whitespace-nowrap
+               {{ $currentCategory === $cat ? 'bg-white border-white text-black shadow-lg' : 'bg-white/5 border-white/5 text-slate-400' }}">
+                    {{ $cat }}
+                </a>
+            @endforeach
+        </div>
     </div>
-</div>
 
-{{-- Индикатор страниц --}}
-<div class="mb-4 px-2 flex justify-end">
-    <span class="text-[9px] font-black text-slate-600 uppercase tracking-tighter">
-        Стр. {{ $dishes->currentPage() }} из {{ $dishes->lastPage() }}
-    </span>
-</div>
+    {{-- Индикатор страниц --}}
+    <div class="mb-4 px-2 flex justify-end">
+        <span class="text-[9px] font-black text-slate-600 uppercase tracking-tighter">
+            Стр. {{ $dishes->currentPage() }} из {{ $dishes->lastPage() }}
+        </span>
+    </div>
 
-<div class="max-w-md mx-auto relative pb-20">
-    <div id="menu-list" class="flex flex-col bg-white/[0.02] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
-        @forelse($dishes as $dish)
-            <div class="group flex items-start gap-3 p-4 border-b border-white/5 last:border-0 hover:bg-white/[0.05] transition-colors" data-id="{{ $dish->id }}">
-                <div class="flex-1 min-w-0 pt-0.5">
-                    <div class="flex flex-col gap-1">
-                        <h2 class="font-bold text-[15px] text-white leading-tight break-words">
-                            {{ $dish->name }}
-                        </h2>
-                        <span class="text-accent font-black text-[14px]">
-                            {{ number_format($dish->price, 0, ',', ' ') }} ₽
-                        </span>
+    <div class="max-w-md mx-auto relative pb-28">
+        <div id="menu-list"
+            class="flex flex-col bg-white/[0.02] rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+            @forelse($dishes as $dish)
+                <div class="group flex items-start gap-3 p-4 border-b border-white/5 last:border-0 hover:bg-white/[0.05] transition-colors"
+                    data-id="{{ $dish->id }}">
+                    <div class="flex-1 min-w-0 pt-0.5">
+                        <div class="flex flex-col gap-1">
+                            <h2 class="font-bold text-[15px] text-white leading-tight break-words">
+                                {{ $dish->name }}
+                            </h2>
+                            <div class="flex items-center gap-2">
+                                <span class="text-accent font-black text-[14px]">
+                                    {{ number_format($dish->price, 0, ',', ' ') }} ₽
+                                </span>
+                                @if ($dish->weight)
+                                    <span class="text-[10px] text-slate-500 font-medium">{{ $dish->weight }} г</span>
+                                @endif
+                            </div>
+                            @if ($dish->description)
+                                <p class="text-[11px] text-slate-400 leading-snug mt-1 line-clamp-2"
+                                    id="desc-{{ $dish->id }}">
+                                    {{ $dish->description }}
+                                </p>
+                                @if (strlen($dish->description) > 60)
+                                    <button onclick="toggleDesc({{ $dish->id }})"
+                                        class="text-[9px] text-accent uppercase font-bold tracking-wider text-left mt-0.5"
+                                        id="desc-btn-{{ $dish->id }}">
+                                        Подробнее
+                                    </button>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- +/- Контрол --}}
+                    <div class="flex items-center bg-white/5 rounded-full p-0.5 border border-white/5 shrink-0 self-center ml-2">
+                        <button
+                            class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
+                            onclick="decrementDish('{{ $dish->id }}')"
+                            id="btn-minus-{{ $dish->id }}"
+                            disabled>
+                            <i class="fas fa-minus text-[10px]"></i>
+                        </button>
+                        <span id="qty-{{ $dish->id }}"
+                            class="w-10 text-center text-white font-bold text-sm select-none">0</span>
+                        <button class="w-8 h-8 flex items-center justify-center text-accent"
+                            onclick="incrementDish('{{ $dish->id }}')">
+                            <i class="fas fa-plus text-[10px]"></i>
+                        </button>
                     </div>
                 </div>
-
-                <div class="flex items-center bg-white/5 rounded-full p-0.5 border border-white/5 shrink-0 self-center ml-2">
-                    <button class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-white" onclick="decrement('{{ $dish->id }}')">
-                        <i class="fas fa-minus text-[10px]"></i>
-                    </button>
-                    <input id="qty-{{ $dish->id }}" value="0" type="number" inputmode="numeric" oninput="validateInput(this); updateFloatingButton();" class="w-10 text-center bg-transparent text-white font-bold text-sm focus:outline-none">
-                    <button class="w-8 h-8 flex items-center justify-center text-accent" onclick="increment('{{ $dish->id }}')">
-                        <i class="fas fa-plus text-[10px]"></i>
-                    </button>
+            @empty
+                <div class="p-10 text-center">
+                    <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Ничего не найдено</p>
                 </div>
+            @endforelse
+        </div>
+
+        {{-- Пагинация --}}
+        @if ($dishes->hasPages())
+            <div class="mt-8 flex items-center justify-center gap-8">
+                <a href="{{ $dishes->appends(request()->query())->previousPageUrl() }}"
+                    class="w-12 h-12 rounded-full border border-accent/30 flex items-center justify-center {{ $dishes->onFirstPage() ? 'opacity-10 pointer-events-none' : '' }}">
+                    <i class="fas fa-chevron-left text-accent"></i>
+                </a>
+                <span class="font-display font-black text-sm text-white/80 tracking-widest">{{ $dishes->currentPage() }}</span>
+                <a href="{{ $dishes->appends(request()->query())->nextPageUrl() }}"
+                    class="w-12 h-12 rounded-full border border-accent/30 flex items-center justify-center {{ !$dishes->hasMorePages() ? 'opacity-10 pointer-events-none' : '' }}">
+                    <i class="fas fa-chevron-right text-accent"></i>
+                </a>
             </div>
-        @empty
-            <div class="p-10 text-center">
-                <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Ничего не найдено</p>
-            </div>
-        @endforelse
+        @endif
     </div>
 
-    {{-- Навигация --}}
-    @if($dishes->hasPages())
-        <div class="mt-8 flex items-center justify-center gap-8">
-            <a href="{{ $dishes->appends(request()->query())->previousPageUrl() }}" class="w-12 h-12 rounded-full border border-accent/30 flex items-center justify-center {{ $dishes->onFirstPage() ? 'opacity-10 pointer-events-none' : '' }}">
-                <i class="fas fa-chevron-left text-accent"></i>
-            </a>
-            <span class="font-display font-black text-sm text-white/80 tracking-widest">{{ $dishes->currentPage() }}</span>
-            <a href="{{ $dishes->appends(request()->query())->nextPageUrl() }}" class="w-12 h-12 rounded-full border border-accent/30 flex items-center justify-center {{ !$dishes->hasMorePages() ? 'opacity-10 pointer-events-none' : '' }}">
-                <i class="fas fa-chevron-right text-accent"></i>
-            </a>
+    {{-- Фиксированная кнопка "В корзину" (над bottom nav) --}}
+    <div id="cart-bar" class="fixed bottom-[70px] left-0 w-full flex justify-center z-[89] px-6 pointer-events-none">
+        <button id="add-all-to-cart"
+            class="w-full max-w-md py-4 bg-accent rounded-2xl shadow-[0_15px_35px_rgba(255,77,0,0.5)]
+                   flex items-center justify-center gap-3 transition-all duration-300 active:scale-95
+                   opacity-0 translate-y-10 pointer-events-none">
+            <span class="font-display font-black text-white text-sm uppercase tracking-widest">В корзину</span>
+            <div class="bg-white/25 px-2.5 py-0.5 rounded-lg flex items-center gap-1.5">
+                <span id="cart-btn-count" class="text-white font-black text-sm">0</span>
+                <i class="fas fa-shopping-cart text-white text-[10px]"></i>
+            </div>
+        </button>
+    </div>
+
+    {{-- Toast --}}
+    <div id="cart-toast"
+        class="fixed top-24 left-1/2 -translate-x-1/2 z-[200] opacity-0 -translate-y-5
+               transition-all duration-300 pointer-events-none">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-2xl shadow-2xl text-center
+                    font-display font-black uppercase text-[10px] tracking-widest flex items-center gap-2">
+            <i class="fas fa-check-circle"></i>
+            <span>Товары добавлены в корзину ✓</span>
         </div>
-    @endif
-</div>
+    </div>
 
-{{-- Кнопка корзины --}}
-<div class="fixed bottom-6 left-0 w-full flex justify-center z-[90] px-6">
-    <button id="add-all-to-cart" class="group w-full max-w-md py-4 bg-accent rounded-2xl shadow-[0_15px_35px_rgba(255,77,0,0.4)] flex items-center justify-center gap-3 transition-all active:scale-95 opacity-0 translate-y-20 pointer-events-none">
-        <span class="font-display font-black text-white text-sm uppercase tracking-widest">В корзину</span>
-        <div class="bg-white/20 px-2 py-0.5 rounded-lg">
-            <i class="fas fa-shopping-cart text-white text-[10px]"></i>
-        </div>
-    </button>
-</div>
+    @push('scripts')
+    <script>
+        const DRAFT_KEY = 'menu_draft';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-@push('scripts')
-<script>
-function validateInput(input) {
-    input.value = input.value.replace(/[^0-9]/g, '');
-    if (input.value.length > 1 && input.value[0] === '0') {
-        input.value = parseInt(input.value);
-    }
-    if (parseInt(input.value) > 999) input.value = 999;
-}
-
-function increment(id) {
-    const input = document.getElementById('qty-' + id);
-    let val = parseInt(input.value) || 0;
-    input.value = val + 1;
-    updateFloatingButton();
-}
-
-function decrement(id) {
-    const input = document.getElementById('qty-' + id);
-    let val = parseInt(input.value) || 0;
-    if (val > 0) input.value = val - 1;
-    updateFloatingButton();
-}
-
-function updateFloatingButton() {
-    let total = 0;
-    document.querySelectorAll('input[id^="qty-"]').forEach(i => {
-        total += parseInt(i.value || 0);
-    });
-    
-    const btn = document.getElementById('add-all-to-cart');
-    if (total > 0) {
-        btn.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
-        btn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
-    } else {
-        btn.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
-        btn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
-    }
-}
-
-document.getElementById('add-all-to-cart').addEventListener('click', function () {
-    const items = [];
-    document.querySelectorAll('[data-id]').forEach(item => {
-        const id = item.getAttribute('data-id');
-        const qty = parseInt(document.getElementById('qty-' + id).value);
-        if (qty > 0) {
-            items.push({ dish_id: id, quantity: qty });
+        // ── LocalStorage helpers ────────────────────────────────────────
+        function getDraft() {
+            try { return JSON.parse(localStorage.getItem(DRAFT_KEY)) || {}; } catch { return {}; }
         }
-    });
+        function saveDraft(d) { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); }
+        function clearDraft()  { localStorage.removeItem(DRAFT_KEY); }
 
-    if (items.length === 0) return;
+        function totalDraftCount() {
+            return Object.values(getDraft()).reduce((s, q) => s + q, 0);
+        }
 
-    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span class="ml-2 uppercase text-[10px] tracking-widest">Обработка...</span>';
-    this.disabled = true;
+        // ── Render a single dish qty ────────────────────────────────────
+        function renderQty(id, qty) {
+            const span  = document.getElementById('qty-' + id);
+            const minus = document.getElementById('btn-minus-' + id);
+            if (!span) return;
+            span.textContent = qty;
+            if (minus) minus.disabled = qty === 0;
+        }
 
-    fetch('/cart/add-multiple', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({ items })
-    })
-    .then(res => res.ok ? window.location.href = '{{ route("cart.index") }}' : location.reload())
-    .catch(() => location.reload());
-});
-</script>
-@endpush
+        // ── Floating button state ───────────────────────────────────────
+        function updateFloatingButton() {
+            const total = totalDraftCount();
+            const btn   = document.getElementById('add-all-to-cart');
+            const bar   = document.getElementById('cart-bar');
+            document.getElementById('cart-btn-count').textContent = total;
 
-<style>
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-</style>
+            if (total > 0) {
+                btn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+                btn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                bar.classList.replace('pointer-events-none', 'pointer-events-auto');
+            } else {
+                btn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+                btn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+                bar.classList.replace('pointer-events-auto', 'pointer-events-none');
+            }
+        }
+
+        // ── +/- ─────────────────────────────────────────────────────────
+        function incrementDish(id) {
+            const d = getDraft();
+            d[id] = (d[id] || 0) + 1;
+            saveDraft(d);
+            renderQty(id, d[id]);
+            updateFloatingButton();
+        }
+
+        function decrementDish(id) {
+            const d = getDraft();
+            if (!d[id]) return;
+            d[id]--;
+            if (d[id] <= 0) delete d[id];
+            saveDraft(d);
+            renderQty(id, d[id] || 0);
+            updateFloatingButton();
+        }
+
+        // ── Description toggle ──────────────────────────────────────────
+        function toggleDesc(id) {
+            const desc = document.getElementById('desc-' + id);
+            const btn  = document.getElementById('desc-btn-' + id);
+            const collapsed = desc.classList.toggle('line-clamp-2');
+            btn.textContent = collapsed ? 'Подробнее' : 'Свернуть';
+        }
+
+        // ── Toast ───────────────────────────────────────────────────────
+        function showToast() {
+            const t = document.getElementById('cart-toast');
+            t.classList.remove('opacity-0', '-translate-y-5');
+            t.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                t.classList.add('opacity-0', '-translate-y-5');
+                t.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        // ── Update cart badge everywhere ────────────────────────────────
+        function updateCartBadges(count) {
+            document.querySelectorAll('.cart-badge').forEach(el => {
+                el.textContent = count;
+                el.classList.toggle('hidden', count === 0);
+            });
+        }
+
+        // ── "В корзину" click ───────────────────────────────────────────
+        document.getElementById('add-all-to-cart').addEventListener('click', function () {
+            const draft = getDraft();
+            if (!Object.keys(draft).length) return;
+
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin text-white"></i>' +
+                            '<span class="ml-2 font-display font-black text-white text-xs uppercase tracking-widest">Добавляем...</span>';
+
+            fetch('/cart/add-bulk', {
+                method : 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body   : JSON.stringify({ items: draft })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    clearDraft();
+                    document.querySelectorAll('[id^="qty-"]').forEach(el => {
+                        renderQty(el.id.replace('qty-', ''), 0);
+                    });
+                    updateFloatingButton();
+                    updateCartBadges(data.cart_count);
+                    showToast();
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML =
+                    '<span class="font-display font-black text-white text-sm uppercase tracking-widest">В корзину</span>' +
+                    '<div class="bg-white/25 px-2.5 py-0.5 rounded-lg flex items-center gap-1.5">' +
+                    '<span id="cart-btn-count" class="text-white font-black text-sm">0</span>' +
+                    '<i class="fas fa-shopping-cart text-white text-[10px]"></i></div>';
+                updateFloatingButton();
+            });
+        });
+
+        // ── Init ────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            const draft = getDraft();
+            document.querySelectorAll('[data-id]').forEach(el => {
+                const id = el.getAttribute('data-id');
+                renderQty(id, draft[id] || 0);
+            });
+            updateFloatingButton();
+        });
+    </script>
+    @endpush
+
+    <style>
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 
 @endsection
