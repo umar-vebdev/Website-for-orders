@@ -51,6 +51,7 @@ services:
     volumes:
       - .:/var/www
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - food-project-network
     depends_on:
