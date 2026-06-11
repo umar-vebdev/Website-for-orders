@@ -10,6 +10,11 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
+# Build assets if build folder doesn't exist
+if [ ! -d "public/build" ]; then
+    npm run build
+fi
+
 # Generate key if not set
 if [ -z "$APP_KEY" ]; then
     php artisan key:generate
