@@ -42,4 +42,4 @@ USER www-data
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-ENTRYPOINT ["/var/www/docker/entrypoint.sh"]
+ENTRYPOINT ["bash", "/var/www/docker/entrypoint.sh"]
